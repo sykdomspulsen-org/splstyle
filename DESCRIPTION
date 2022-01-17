@@ -1,0 +1,36 @@
+Package: splstyle
+Title: Outputs in the Style(s) used by FHI and Sykdomspulsen
+Version: 2020.5.25
+Authors@R: person(c("Richard","Aubrey"), "White", email = "hello@rwhite.no", role = c("aut", "cre"),
+    comment = c(ORCID = "0000-0002-6747-1726")
+  )
+Description: Helpful functions for creating outputs in the style(s) used by FHI and Sykdomspulsen.
+Depends: R (>= 3.3.0)
+License: MIT
+URL: https://docs.sykdomspulsen.no/splstyle, https://github.com/sykdomspulsen-org/splstyle
+BugReports: https://github.com/sykdomspulsen-org/splstyle/issues
+Encoding: UTF-8
+LazyData: true
+Imports: data.table,
+    ggplot2, 
+    glue, 
+    huxtable,
+    htmlTable,
+    magrittr,
+    openxlsx,
+    purrr,
+    rstudioapi,
+    stringi,
+    stringr, 
+    scales,
+Suggests: testthat,
+    knitr,
+    rmarkdown,
+    rstudioapi,
+    glue,
+    lemon,
+    fhi,
+    fhidata,
+    fhimaps
+RoxygenNote: 7.1.1
+VignetteBuilder: knitr

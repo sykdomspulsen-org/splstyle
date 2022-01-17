@@ -1,0 +1,310 @@
+---
+title: "Tables"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Tables}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(data.table)
+library(magrittr)
+```
+
+## HTML tables
+
+```{r}
+data <- data.table(datasets::iris)[1:40]
+setcolorder(data, "Species")
+data[]
+
+# create formatted data and value data
+d_value <- copy(data)
+d_formatted <- copy(data)
+
+# we work with d_value to identify which cells should be colored
+# we save the colors in a matrix called "css_style_matrix"
+css_style_matrix <- splstyle::htmltable_css_style_matrix(d_value)
+
+# set some of the third column to have a red background
+rows <- which(d_value[[3]] > 4)
+if(length(rows) > 0) css_style_matrix[rows,3] <- splstyle::htmltable_css_background_red
+
+# set some of the fourth column to have a blue background according to risk level
+# risk level 1
+rows <- 1:nrow(d_value)
+if(length(rows) > 0) css_style_matrix[rows,4] <- splstyle::htmltable_css_risk_1_5(1, palette = "blue")
+
+# risk level 3
+rows <- which(d_value[[4]] > 1.3)
+if(length(rows) > 0) css_style_matrix[rows,4] <- splstyle::htmltable_css_risk_1_5(3, palette = "blue")
+
+# risk level 5
+rows <- which(d_value[[4]] > 1.5)
+if(length(rows) > 0) css_style_matrix[rows,4] <- splstyle::htmltable_css_risk_1_5(5, palette = "blue")
+
+# set some of the fifth column to have a red background according to risk level
+# risk level 1
+rows <- 1:nrow(d_value)
+if(length(rows) > 0) css_style_matrix[rows,5] <- splstyle::htmltable_css_risk_1_5(1, palette = "red")
+
+# risk level 2
+rows <- which(d_value[[5]] > 0.1)
+if(length(rows) > 0) css_style_matrix[rows,5] <- splstyle::htmltable_css_risk_1_5(2, palette = "red")
+
+# risk level 3
+rows <- which(d_value[[5]] > 0.2)
+if(length(rows) > 0) css_style_matrix[rows,5] <- splstyle::htmltable_css_risk_1_5(3, palette = "red")
+
+
+# risk level 4
+rows <- which(d_value[[5]] > 0.3)
+if(length(rows) > 0) css_style_matrix[rows,5] <- splstyle::htmltable_css_risk_1_5(4, palette = "red")
+
+# risk level 5
+rows <- which(d_value[[5]] > 0.4)
+if(length(rows) > 0) css_style_matrix[rows,5] <- splstyle::htmltable_css_risk_1_5(5, palette = "red")
+
+
+# format the data nicely inside d_formatted
+# set columns 2-3 as numeric with 0 decimal places
+d_formatted[, Sepal.Length := splstyle::format_nor_num_0(Sepal.Length)]
+d_formatted[, Sepal.Width := splstyle::format_nor_num_0(Sepal.Width)]
+
+# set columns 4 as numeric with 1 decimal places
+d_formatted[, Petal.Length := splstyle::format_nor_num_1(Petal.Length)]
+
+# set columns 5 as percentage with 1 decimal places
+d_formatted[, Petal.Width := splstyle::format_nor_perc_1(100*Petal.Width)]
+
+setnames(
+  d_formatted,
+  c("","Sepal length", "Sepal width", "Petal length", "Petal width (%)")
+)
+
+# now combine d_formatted (contains the text in each cell)
+# and the css_style_matrix (contains the colors of each cell)
+tab <- splstyle::htmltable_quick_style(d_formatted, css_style_matrix = css_style_matrix) %>%
+  htmlTable::htmlTable(
+    rnames = FALSE,
+    align = "|l|c|c|c|c|",
+    align.header = "|l|c|c|c|c|",
+    align.cgroup = "|l|c|c|c|c|",
+    spacer.celltype = "skip",
+    caption = "This is a caption"
+  )
+
+# you can use this function to interactively test out your table
+# splstyle::view_html(tab)
+```
+
+```{r, results="asis"}
+cat(tab)
+```
+
+## Excel tables
+
+```{r}
+data <- data.table(datasets::iris)[1:40]
+setcolorder(data, "Species")
+data[]
+
+wb <- openxlsx::createWorkbook()
+openxlsx::addWorksheet(wb, "data")
+
+# adding custom titles
+openxlsx::writeData(
+  wb,
+  "data",
+  x = matrix(ncol=4, nrow=0, dimnames=list(NULL,c("Sepal length", "Sepal width", "Petal length", "Petal width (%)"))),
+  startCol = 2,
+  startRow = 1
+)
+
+# write data
+openxlsx::writeData(
+  wb,
+  sheet = "data",
+  x = data,
+  startCol = 1,
+  startRow = 2,
+  colNames = FALSE
+)
+
+# add styles
+# title style
+openxlsx::addStyle(
+  wb,
+  sheet = "data",
+  style = splstyle::excel_style_title,
+  rows = 1,
+  cols = 1:10,
+  gridExpand = T,
+  stack = T
+)
+
+# set columns 2-3 as numeric with 0 decimal places
+openxlsx::addStyle(
+  wb,
+  sheet = "data",
+  style = splstyle::excel_style_num_0,
+  rows = 2:100,
+  cols = 2:3,
+  gridExpand = T,
+  stack = T
+)
+
+# set columns 4 as numeric with 1 decimal places
+openxlsx::addStyle(
+  wb,
+  sheet = "data",
+  style = splstyle::excel_style_num_1,
+  rows = 2:100,
+  cols = 4,
+  gridExpand = T,
+  stack = T
+)
+
+# set columns 5 as percentage with 1 decimal places
+openxlsx::addStyle(
+  wb,
+  sheet = "data",
+  style = splstyle::excel_style_prop_to_perc_1,
+  rows = 2:100,
+  cols = 5,
+  gridExpand = T,
+  stack = T
+)
+
+# set some of the third column to have a red background
+# you may also use the function splstyle::excel_style_background_yellow
+# these are just shortcuts for
+# splstyle::excel_style_risk_1_5(3, palette = "red")
+# splstyle::excel_style_risk_1_5(5, palette = "red")
+rows <- 1 + which(data[[3]] > 4)
+if(length(rows) > 0) openxlsx::addStyle(
+  wb,
+  sheet = "data",
+  style = splstyle::excel_style_background_red,
+  rows = rows,
+  cols = 3,
+  gridExpand = T,
+  stack = T
+)
+
+# set some of the fourth column to have a blue background according to risk level
+# risk level 1
+rows <- 1 + 1:ncol(data)
+if(length(rows) > 0) openxlsx::addStyle(
+  wb,
+  sheet = "data",
+  style = splstyle::excel_style_risk_1_5(1, palette = "blue"),
+  rows = rows,
+  cols = 4,
+  gridExpand = T,
+  stack = T
+)
+
+# risk level 3
+rows <- 1 + which(data[[4]] > 1.3)
+if(length(rows) > 0) openxlsx::addStyle(
+  wb,
+  sheet = "data",
+  style = splstyle::excel_style_risk_1_5(3, palette = "blue"),
+  rows = rows,
+  cols = 4,
+  gridExpand = T,
+  stack = T
+)
+
+# risk level 5
+rows <- 1 + which(data[[4]] > 1.5)
+if(length(rows) > 0) openxlsx::addStyle(
+  wb,
+  sheet = "data",
+  style = splstyle::excel_style_risk_1_5(5, palette = "blue"),
+  rows = rows,
+  cols = 4,
+  gridExpand = T,
+  stack = T
+)
+
+# set some of the fifth column to have a red background according to risk level
+# risk level 1
+rows <- 1 + 1:nrow(data)
+if(length(rows) > 0) openxlsx::addStyle(
+  wb,
+  sheet = "data",
+  style = splstyle::excel_style_risk_1_5(1, palette = "red"),
+  rows = rows,
+  cols = 5,
+  gridExpand = T,
+  stack = T
+)
+
+# risk level 2
+rows <- 1 + which(data[[5]] > 0.1)
+if(length(rows) > 0) openxlsx::addStyle(
+  wb,
+  sheet = "data",
+  style = splstyle::excel_style_risk_1_5(2, palette = "red"),
+  rows = rows,
+  cols = 5,
+  gridExpand = T,
+  stack = T
+)
+
+# risk level 3
+rows <- 1 + which(data[[5]] > 0.2)
+if(length(rows) > 0) openxlsx::addStyle(
+  wb,
+  sheet = "data",
+  style = splstyle::excel_style_risk_1_5(3, palette = "red"),
+  rows = rows,
+  cols = 5,
+  gridExpand = T,
+  stack = T
+)
+
+# risk level 4
+rows <- 1 + which(data[[5]] > 0.3)
+if(length(rows) > 0) openxlsx::addStyle(
+  wb,
+  sheet = "data",
+  style = splstyle::excel_style_risk_1_5(4, palette = "red"),
+  rows = rows,
+  cols = 5,
+  gridExpand = T,
+  stack = T
+)
+
+# risk level 5
+rows <- 1 + which(data[[5]] > 0.4)
+if(length(rows) > 0) openxlsx::addStyle(
+  wb,
+  sheet = "data",
+  style = splstyle::excel_style_risk_1_5(5, palette = "red"),
+  rows = rows,
+  cols = 5,
+  gridExpand = T,
+  stack = T
+)
+
+# freeze first column and row
+openxlsx::freezePane(wb, "data", firstActiveRow=2, firstActiveCol=2)
+
+# set widths, and hide the second column
+openxlsx::setColWidths(wb, "data", cols=c(1:5), width="auto", hidden=c(F,T,F,F,F))
+
+# save
+# openxlsx::saveWorkbook(wb, "test.xlsx", overwrite = TRUE)
+```
+
