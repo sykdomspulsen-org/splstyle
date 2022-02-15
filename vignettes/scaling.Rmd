@@ -89,7 +89,7 @@ First we visualise the fictional observed death over 2 years.
 ```{r}
 # separate the yrwk string to produce week id
 
-dd$week <- spltime::isoyearweek_to_week_n(dd$yrwk)
+dd$week <- spltime::isoyearweek_to_isoweek_n(dd$yrwk)
 dd$year <- as.factor(dd$year)
 
 # plot cases
