@@ -41,6 +41,7 @@ For instance, if you have plotted $y = log2(x)$, `format_nor_invlog2_1` formats 
 ```{r}
 library(ggplot2)
 library(splstyle)
+library(spltime)
 library(magrittr)
 ```
 
@@ -88,7 +89,7 @@ First we visualise the fictional observed death over 2 years.
 ```{r}
 # separate the yrwk string to produce week id
 
-dd$week <- splstyle::isoyearweek_to_week_n(dd$yrwk)
+dd$week <- spltime::isoyearweek_to_week_n(dd$yrwk)
 dd$year <- as.factor(dd$year)
 
 # plot cases
