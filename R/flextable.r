@@ -1,18 +1,24 @@
 #' flextable_dailyreport_test
-#' @param tab data.table
-#' @param position Position
+#' @param data dataset
+#' @param width width
+#' @param width_col column to change the width of (if any)
+#' @param fontsize
+#' @param fontname
 #' @export
 
-flextable_dailyreport_test <- function(tab,
+flextable_dailyreport_test <- function(data,
                                        width = NULL,
                                        width_col = NULL,
                                        fontsize,
                                        fontname = "calibri"
                                        ) {
-  ft <- flextable::flextable(tab)
+  ft <- flextable::flextable(data)
   ft <- flextable::autofit(ft)
-  ft <- flextable::width(ft, j = width_col, width = width)
-  # ft <- flextable::width(ft, j = 1, width = 1.55)
+
+  if (!is.null(width)){
+    ft <- flextable::width(ft, j = width_col, width = width)
+  }
+
   ft <- flextable::fontsize(ft, size = fontsize, part = "all")
   ft <- flextable::font(ft, fontname = fontname, part = "all")
   ft <- flextable::align_text_col(ft, align = "right")
