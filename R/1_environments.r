@@ -312,6 +312,10 @@ vals$pals$primary_11 <- c(
   vals$pals$primary_10,
   colors$v2$neutral["S2"]
 )
+vals$pals$primary_12 <- c(
+  vals$pals$primary_11,
+  colors$v2$green["G1"]
+)
 
 # warning - low medium high
 vals$pals$warning_3 <- c(
