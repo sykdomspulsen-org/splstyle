@@ -1,6 +1,6 @@
 ---
 title: "Introduction to splstyle"
-author: "Richard White, Chi Zhang"
+author: "Richard White, Chi Zhang, Celine Victoria Berg-Hansen"
 date: "`r Sys.Date()`"
 output:
   rmarkdown::html_vignette:
@@ -37,6 +37,8 @@ If multiple geographical areas:
 ```{r}
 library(ggplot2)
 library(data.table)
+library(spldata)
+library(spltime)
 library(splstyle)
 ```
 
@@ -46,12 +48,12 @@ We generally start with a linelist dataset (make sure it is a `data.table`!).
 
 ```{r}
 set.seed(4)
-dates <- sample(seq.Date(as.Date("2018-01-01"), 
+dates <- sample(seq.Date(as.Date("2018-01-01"),
                          as.Date("2018-02-08"), 1),
-                20000, 
+                20000,
                 replace = T)
 d <- expand.grid(
-  location_code=unique(fhidata::norway_locations_b2020$county_code),
+  location_code = unique(spldata::norway_locations_names_b2020[granularity_geo == "county"]$location_code),
   date = dates
 )
 # Convert to data.table
@@ -88,7 +90,7 @@ print(d)
 
 # create skeleton
 skeleton <- data.table(expand.grid(
-  location_code = unique(fhidata::norway_locations_b2020$county_code),
+  location_code = unique(spldata::norway_locations_names_b2020[granularity_geo == "county"]$location_code),
   date = seq.Date(min(d$date), max(d$date), 1)
 ))
 
@@ -98,6 +100,8 @@ d <- merge(d, skeleton, by=c("location_code", "date"), all=T)
 # Fill in 'missing' Ns with 0
 d[is.na(N), N := 0]
 
+d[, location_name := splstyle::location_code_to_character(location_code)]
+
 # Now you have a clean aggregated daily dataset that contains days with 0 cases!
 print(d)
 ```
@@ -106,7 +110,7 @@ We can also create a weekly dataset:
 
 ```{r}
 # create 3 new variables:
-d[, isoyearweek := fhi::isoyearweek(date)]
+d[, isoyearweek := spltime::date_to_isoyearweek_c(date)]
 
 # aggregate down to weekly level
 w <- d[,
@@ -123,13 +127,14 @@ print(w)
 
 ## Graphs for one geographical area
 
-Daily epicurve for `county01`
+Daily epicurve for `county03`
 
 ```{r}
-q <- ggplot(d[location_code=="county03"], aes(x = date, y = N))
+q <- ggplot(d[location_code == "county03"], aes(x = date, y = N))
 q <- q + geom_col(fill = splstyle::base_color, width = 0.8)
 q <- q + scale_x_date("Date")
-q <- q + scale_y_continuous("Number of reported cases",
+q <- q + scale_y_continuous(
+  "Number of reported cases",
   breaks = splstyle::pretty_breaks(5),
   expand = expansion(mult = c(0, 0.1))
 )
@@ -139,7 +144,7 @@ q <- q + splstyle::theme_fhi_lines_horizontal()
 q
 ```
 
-Weekly epicurve for `county01`
+Weekly epicurve for `county03`
 
 ```{r}
 q <- ggplot(w[location_code=="county03"], aes(x = isoyearweek, y = N))
@@ -181,7 +186,7 @@ Daily epicurve for all geographical areas with vertical x-axis labels
 ```{r fig.height=10, fig.width=8}
 q <- ggplot(d, aes(x = date, y = N))
 q <- q + geom_col(fill = splstyle::base_color, width = 0.8)
-q <- q + lemon::facet_rep_wrap(~location_code, repeat.tick.labels = "y")
+q <- q + lemon::facet_rep_wrap(~location_name, repeat.tick.labels = "y")
 q <- q + splstyle::scale_fill_fhi("Location",palette="primary")
 q <- q + scale_x_date("Date")
 q <- q + scale_y_continuous("Number of reported cases",
@@ -200,7 +205,7 @@ Weekly epicurve with vertical x-axis labels
 ```{r fig.height=10, fig.width=8}
 q <- ggplot(d, aes(x = isoyearweek, y = N))
 q <- q + geom_col(fill = splstyle::base_color, width = 0.8)
-q <- q + lemon::facet_rep_wrap(~location_code, repeat.tick.labels = "y", ncol=4)
+q <- q + lemon::facet_rep_wrap(~location_name, repeat.tick.labels = "y", ncol=4)
 q <- q + scale_fill_fhi("Location",palette="primary")
 q <- q + scale_x_discrete("Isoweek")
 q <- q + scale_y_continuous("Number of reported cases",
