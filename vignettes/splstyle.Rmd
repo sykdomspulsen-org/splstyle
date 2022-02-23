@@ -29,7 +29,7 @@ knitr::opts_chunk$set(
 - For `scale_y_continuous` use `breaks = splstyle::pretty_breaks(5)`
 - For `scale_y_continuous` use `expand = expansion(mult = c(0, 0.1))`
 - If the x-axis is too cramped, make the labels vertical `q <- q + splstyle::set_x_axis_vertical()`
-- Say when your data was extracted `q <- q + labs(caption = "Data extracted on 2018-02-20")`
+- Say when your data was extracted `q <- q + labs(caption = fhi_caption())`
 
 If multiple geographical areas:
 - Use `q <- q + lemon::facet_rep_wrap(~location_code, repeat.tick.labels = "y")`
@@ -53,7 +53,9 @@ dates <- sample(seq.Date(as.Date("2018-01-01"),
                 20000,
                 replace = T)
 d <- expand.grid(
-  location_code = unique(spldata::norway_locations_names_b2020[granularity_geo == "county"]$location_code),
+  location_code = unique(
+    spldata::norway_locations_names_b2020[granularity_geo == "county"]$location_code
+    ),
   date = dates
 )
 # Convert to data.table
@@ -90,7 +92,9 @@ print(d)
 
 # create skeleton
 skeleton <- data.table(expand.grid(
-  location_code = unique(spldata::norway_locations_names_b2020[granularity_geo == "county"]$location_code),
+  location_code = unique(
+    spldata::norway_locations_names_b2020[granularity_geo == "county"]$location_code
+    ),
   date = seq.Date(min(d$date), max(d$date), 1)
 ))
 
@@ -122,6 +126,9 @@ w <- d[,
     isoyearweek
   )
 ]
+
+w[, location_name := splstyle::location_code_to_character(location_code)]
+
 print(w)
 ```
 
@@ -177,6 +184,26 @@ q <- q + splstyle::set_x_axis_vertical()
 q
 ```
 
+```{r}
+q <- ggplot(d, aes(x = date, group = location_name))
+q <- q + geom_line(lwd = 1,
+                   mapping = aes(y = N), 
+                   color = splstyle::base_color)
+q <- q + lemon::facet_rep_wrap(~location_name, repeat.tick.labels = "y")
+# q <- q + scale_x_discrete("Isoweek")
+q <- q + scale_y_continuous("Number of reported cases",
+  breaks = splstyle::pretty_breaks(5),
+  expand = expansion(mult = c(0, 0.1))
+  )
+q <- q + labs(title = "Epicurve from 2018-01-01 to 2018-02-20")
+q <- q + labs(caption = fhi_caption())
+q <- q + splstyle::theme_fhi_lines_horizontal()
+  
+q <- q + splstyle::set_x_axis_vertical()
+  
+q
+```
+
 ## Epicurves for multiple geographical areas
 
 When we have multiple geographical areas, we use the function `lemon::facet_rep_wrap` to create multiple epicurves.
@@ -219,6 +246,28 @@ q <- q + splstyle::set_x_axis_vertical()
 q
 ```
 
+Daily epicurve for all geographical areas with vertical x-axis labels
+
+```{r}
+q <- ggplot(d, aes(x = date, group = location_name))
+q <- q + geom_line(
+                   mapping = aes(y = N), 
+                   color = splstyle::base_color)
+q <- q + lemon::facet_rep_wrap(~location_name, repeat.tick.labels = "y")
+# q <- q + scale_x_discrete("Isoweek")
+q <- q + scale_y_continuous("Number of reported cases",
+  breaks = splstyle::pretty_breaks(5),
+  expand = expansion(mult = c(0, 0.1))
+  )
+q <- q + labs(title = "Epicurve from 2018-01-01 to 2018-02-20")
+q <- q + labs(caption = fhi_caption())
+q <- q + splstyle::theme_fhi_lines_horizontal()
+  
+q <- q + splstyle::set_x_axis_vertical()
+  
+q
+```
+
 ## Coloured epicurves
 
 Sometimes you would like to add colours to differentiate between different variables. This can be done through the `fill` attribute.
@@ -230,7 +279,7 @@ q <- ggplot(w[location_code %in% c(
   "county15",
   "county30",
   "county34")], 
-  aes(x = isoyearweek, y = N, fill = location_code))
+  aes(x = isoyearweek, y = N, fill = location_name))
 q <- q + geom_col(width = 0.8)
 q <- q + splstyle::scale_fill_fhi("Location",palette="primary")
 q <- q + scale_x_discrete("Isoweek")
