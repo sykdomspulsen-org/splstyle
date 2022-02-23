@@ -29,9 +29,10 @@ knitr::opts_chunk$set(
 - For `scale_y_continuous` use `breaks = splstyle::pretty_breaks(5)`
 - For `scale_y_continuous` use `expand = expansion(mult = c(0, 0.1))`
 - If the x-axis is too cramped, make the labels vertical `q <- q + splstyle::set_x_axis_vertical()`
-- Say when your data was extracted `q <- q + labs(caption = fhi_caption())`
+- Say when your data was extracted `q <- q + labs(caption = "Data extracted on 2018-02-20"` or   
+`q <- q + labs(caption = fhi_caption())`
 
-If multiple geographical areas:
+If multiple geographical areas:  
 - Use `q <- q + lemon::facet_rep_wrap(~location_code, repeat.tick.labels = "y")`
 
 ```{r}
@@ -77,7 +78,7 @@ We now:
 # Convert to data.table
 setDT(d)
 
-# aggregate
+# Aggregate
 d <- d[,
   .(
     N = .N
@@ -87,7 +88,7 @@ d <- d[,
     date
   )
 ]
-# aggregated daily dataset that does not contain days with 0 cases
+# Aggregated daily dataset that does not contain days with 0 cases
 print(d)
 
 # create skeleton
@@ -98,12 +99,13 @@ skeleton <- data.table(expand.grid(
   date = seq.Date(min(d$date), max(d$date), 1)
 ))
 
-# merge the two datasets together
+# Merge the two datasets together
 d <- merge(d, skeleton, by=c("location_code", "date"), all=T)
 
 # Fill in 'missing' Ns with 0
 d[is.na(N), N := 0]
 
+# Include location_name in the dataset 
 d[, location_name := splstyle::location_code_to_character(location_code)]
 
 # Now you have a clean aggregated daily dataset that contains days with 0 cases!
