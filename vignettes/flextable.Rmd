@@ -21,4 +21,89 @@ knitr::opts_chunk$set(
 )
 ```
 
-## Hey
+## Checklist
+
+- Use `ft <- flextable::autofit(ft)`
+
+- Use `ft <- flextable::font(ft, fontname = "calibri", part = "all")`
+- Use `ft <- flextable::align_text_col(ft, align = "right")`
+- Use `ft <- flextable::align(ft, j = 1, align = "left", part = "all")`
+
+- Make sure that your dataset contains all days/weeks (i.e. there can be days/weeks with 0 cases)
+- Use `q <- q + splstyle::theme_fhi_lines_horizontal()`
+- Use `q <- q + geom_col(fill = splstyle::base_color, width = 0.8)`
+- For `scale_y_continuous` use `breaks = splstyle::pretty_breaks(5)`
+- For `scale_y_continuous` use `expand = expansion(mult = c(0, 0.1))`
+- If the x-axis is too cramped, make the labels vertical `q <- q + splstyle::set_x_axis_vertical()`
+- Say when your data was extracted `q <- q + labs(caption = "Data extracted on 2018-02-20")`
+
+```{r}
+library(flextable)
+library(data.table)
+library(splstyle)
+```
+
+## Data
+
+```{r}
+set.seed(4)
+dates <- sample(seq.Date(as.Date("2022-01-01"), 
+                         as.Date("2022-01-05"), 1),
+                200, 
+                replace = T)
+d <- expand.grid(
+  location_code=unique(fhidata::norway_locations_b2020$county_code),
+  date = dates
+)
+# Convert to data.table
+setDT(d)
+
+# aggregate
+d <- d[,
+  .(
+    N = .N
+  ),
+  keyby = .(
+    location_code,
+    date
+  )
+]
+# aggregated daily dataset that does not contain days with 0 cases
+print(d)
+
+# create skeleton
+skeleton <- data.table(expand.grid(
+  location_code = unique(fhidata::norway_locations_b2020$county_code),
+  date = seq.Date(min(d$date), max(d$date), 1)
+))
+
+# merge the two datasets together
+d <- merge(d, skeleton, by=c("location_code", "date"), all=T)
+
+# Fill in 'missing' Ns with 0
+d[is.na(N), N := 0]
+
+d <- d[-1, ]
+
+# print
+print(d)
+```
+
+## Table
+
+```{r}
+  ft <- flextable::flextable(tab)
+  # ft <- flextable::theme_box(ft)
+  ft <- flextable::autofit(ft)
+  ft <- flextable::width(ft, width = 0.7)
+  ft <- flextable::width(ft, j = 1, width = 1.5)
+  ft <- flextable::width(ft, j = 2, width = 1.2)
+
+  ft <- flextable::fontsize(ft, size = 10, part = "all")
+  ft <- flextable::font(ft, fontname = "calibri", part = "all")
+  ft <- flextable::align_text_col(ft, align = "right")
+  ft <- flextable::align(ft, j = 1, align = "left", part = "all")
+
+  ft
+```
+
