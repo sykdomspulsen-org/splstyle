@@ -23,16 +23,16 @@ knitr::opts_chunk$set(
 
 ## Checklist
 
-- Make sure that your dataset contains all days/weeks (i.e. there can be days/weeks with 0 cases)
-- Use `q <- q + splstyle::theme_fhi_lines_horizontal()`
-- Use `q <- q + geom_col(fill = splstyle::base_color, width = 0.8)`
-- For `scale_y_continuous` use `breaks = splstyle::pretty_breaks(5)`
-- For `scale_y_continuous` use `expand = expansion(mult = c(0, 0.1))`
-- If the x-axis is too cramped, make the labels vertical `q <- q + splstyle::set_x_axis_vertical()`
-- Say when your data was extracted `q <- q + labs(caption = "Data extracted on 2018-02-20"` or   
-`q <- q + labs(caption = fhi_caption())`
+-   Make sure that your dataset contains all days/weeks (i.e. there can be days/weeks with 0 cases)
+-   Use `q <- q + splstyle::theme_fhi_lines_horizontal()`
+-   Use `q <- q + geom_col(fill = splstyle::base_color, width = 0.8)`
+-   For `scale_y_continuous` use `breaks = splstyle::pretty_breaks(5)`
+-   For `scale_y_continuous` use `expand = expansion(mult = c(0, 0.1))`
+-   If the x-axis is too cramped, make the labels vertical `q <- q + splstyle::set_x_axis_vertical()`
+-   Say when your data was extracted `q <- q + labs(caption = "Data extracted on 2018-02-20"` or\
+    `q <- q + labs(caption = fhi_caption())`
 
-If multiple geographical areas:  
+If multiple geographical areas:\
 - Use `q <- q + lemon::facet_rep_wrap(~location_code, repeat.tick.labels = "y")`
 
 ```{r}
@@ -62,17 +62,20 @@ d <- expand.grid(
 # Convert to data.table
 setDT(d)
 
+# temporary solution
+d[, n := stats::rpois(.N, 500)]
+
 # print
 print(d)
 ```
 
 We now:
 
-1. Convert this into a `data.table` (in case it isn't already)
-2. Aggregate it to daily data (this dataset doesn't contain any days with 0 cases)
-3. Create a 'skeleton' dataset that contains all days from the first to last day
-4. Merge the two datasets together (so you now have a dataset that contains days with 0 cases)
-5. Fill in 'missing' N's with 0 (they are the dates that came from the skeleton dataset)
+1.  Convert this into a `data.table` (in case it isn't already)
+2.  Aggregate it to daily data (this dataset doesn't contain any days with 0 cases)
+3.  Create a 'skeleton' dataset that contains all days from the first to last day
+4.  Merge the two datasets together (so you now have a dataset that contains days with 0 cases)
+5.  Fill in 'missing' N's with 0 (they are the dates that came from the skeleton dataset)
 
 ```{r}
 # Convert to data.table
@@ -81,7 +84,7 @@ setDT(d)
 # Aggregate
 d <- d[,
   .(
-    N = .N
+    n = .N
   ),
   keyby = .(
     location_code,
@@ -103,7 +106,7 @@ skeleton <- data.table(expand.grid(
 d <- merge(d, skeleton, by=c("location_code", "date"), all=T)
 
 # Fill in 'missing' Ns with 0
-d[is.na(N), N := 0]
+d[is.na(n), n := 0]
 
 # Include location_name in the dataset 
 d[, location_name := splstyle::location_code_to_character(location_code)]
@@ -121,7 +124,7 @@ d[, isoyearweek := spltime::date_to_isoyearweek_c(date)]
 # aggregate down to weekly level
 w <- d[,
   .(
-    N = sum(N)
+    n = sum(n)
   ),
   keyby = .(
     location_code,
@@ -139,7 +142,7 @@ print(w)
 Daily epicurve for `county03`
 
 ```{r}
-q <- ggplot(d[location_code == "county03"], aes(x = date, y = N))
+q <- ggplot(d[location_code == "county03"], aes(x = date, y = n))
 q <- q + geom_col(fill = splstyle::base_color, width = 0.8)
 q <- q + scale_x_date("Date")
 q <- q + scale_y_continuous(
@@ -156,7 +159,7 @@ q
 Weekly epicurve for `county03`
 
 ```{r}
-q <- ggplot(w[location_code=="county03"], aes(x = isoyearweek, y = N))
+q <- ggplot(w[location_code=="county03"], aes(x = isoyearweek, y = n))
 q <- q + geom_col(fill = splstyle::base_color, width = 0.8)
 q <- q + scale_x_discrete("Isoweek")
 q <- q + scale_y_continuous("Number of reported cases",
@@ -172,7 +175,7 @@ q
 Weekly epicurve with vertical x-axis labels
 
 ```{r}
-q <- ggplot(w, aes(x = isoyearweek, y = N))
+q <- ggplot(w, aes(x = isoyearweek, y = n))
 q <- q + geom_col(fill = splstyle::base_color, width = 0.8)
 q <- q + scale_x_discrete("Isoweek")
 q <- q + scale_y_continuous("Number of reported cases",
@@ -189,7 +192,7 @@ q
 ```{r}
 q <- ggplot(d, aes(x = date, group = location_name))
 q <- q + geom_line(lwd = 1,
-                   mapping = aes(y = N), 
+                   mapping = aes(y = n), 
                    color = splstyle::base_color)
 q <- q + lemon::facet_rep_wrap(~location_name, repeat.tick.labels = "y")
 # q <- q + scale_x_discrete("Isoweek")
@@ -213,7 +216,7 @@ When we have multiple geographical areas, we use the function `lemon::facet_rep_
 Daily epicurve for all geographical areas with vertical x-axis labels
 
 ```{r fig.height=10, fig.width=8}
-q <- ggplot(d, aes(x = date, y = N))
+q <- ggplot(d, aes(x = date, y = n))
 q <- q + geom_col(fill = splstyle::base_color, width = 0.8)
 q <- q + lemon::facet_rep_wrap(~location_name, repeat.tick.labels = "y")
 q <- q + splstyle::scale_fill_fhi("Location",palette="primary")
@@ -232,7 +235,7 @@ q
 Weekly epicurve with vertical x-axis labels
 
 ```{r fig.height=10, fig.width=8}
-q <- ggplot(d, aes(x = isoyearweek, y = N))
+q <- ggplot(d, aes(x = isoyearweek, y = n))
 q <- q + geom_col(fill = splstyle::base_color, width = 0.8)
 q <- q + lemon::facet_rep_wrap(~location_name, repeat.tick.labels = "y", ncol=4)
 q <- q + scale_fill_fhi("Location",palette="primary")
@@ -248,25 +251,36 @@ q <- q + splstyle::set_x_axis_vertical()
 q
 ```
 
-Daily epicurve for all geographical areas with vertical x-axis labels
+Daily line graph for all geographical areas with vertical x-axis labels
 
 ```{r}
-q <- ggplot(d, aes(x = date, group = location_name))
-q <- q + geom_line(
-                   mapping = aes(y = N), 
-                   color = splstyle::base_color)
-q <- q + lemon::facet_rep_wrap(~location_name, repeat.tick.labels = "y")
-# q <- q + scale_x_discrete("Isoweek")
+
+d_line <- copy(w)
+d_line[, n := stats::rnorm(.N, 500)]
+
+d_line <- d_line[location_code %in% c(
+  "county03",
+  "county11",
+  "county15",
+  "county30",
+  "county34")]
+
+q <- ggplot(d_line, aes(x = isoyearweek, y = n, group = location_code))
+q <- q + geom_line(lwd = 1)
+q <- q + splstyle::theme_fhi_lines_horizontal()
+q <- q + splstyle::scale_color_fhi(NULL, palette = "primary")
+q <- q + splstyle::set_x_axis_vertical()
+q <- q + scale_x_discrete("Isoweek")
+# q <- q + expand_limits(y = 0)
 q <- q + scale_y_continuous("Number of reported cases",
   breaks = splstyle::pretty_breaks(5),
   expand = expansion(mult = c(0, 0.1))
   )
-q <- q + labs(title = "Epicurve from 2018-01-01 to 2018-02-20")
+q <- q + labs(title = "Line graph from 2018-01-01 to 2018-02-20")
 q <- q + labs(caption = fhi_caption())
-q <- q + splstyle::theme_fhi_lines_horizontal()
-  
-q <- q + splstyle::set_x_axis_vertical()
-  
+
+# q <- q + lemon::facet_rep_wrap(~location_name, repeat.tick.labels = "y")
+
 q
 ```
 
@@ -281,7 +295,7 @@ q <- ggplot(w[location_code %in% c(
   "county15",
   "county30",
   "county34")], 
-  aes(x = isoyearweek, y = N, fill = location_name))
+  aes(x = isoyearweek, y = n, fill = location_name))
 q <- q + geom_col(width = 0.8)
 q <- q + splstyle::scale_fill_fhi("Location",palette="primary")
 q <- q + scale_x_discrete("Isoweek")
@@ -302,9 +316,9 @@ Sometimes you would like to add colours to differentiate between different varia
 
 ```{r}
 pd <- w[location_code %in% "county03"]
-pd[, cum_n := cumsum(N)]
+pd[, cum_n := cumsum(n)]
 
-pd[, value_left := N]
+pd[, value_left := n]
 pd[, value_right := cum_n]
 
 max_left <- max(pd$value_left)
