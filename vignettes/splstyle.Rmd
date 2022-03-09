@@ -189,26 +189,6 @@ q <- q + splstyle::set_x_axis_vertical()
 q
 ```
 
-```{r}
-q <- ggplot(d, aes(x = date, group = location_name))
-q <- q + geom_line(lwd = 1,
-                   mapping = aes(y = n), 
-                   color = splstyle::base_color)
-q <- q + lemon::facet_rep_wrap(~location_name, repeat.tick.labels = "y")
-# q <- q + scale_x_discrete("Isoweek")
-q <- q + scale_y_continuous("Number of reported cases",
-  breaks = splstyle::pretty_breaks(5),
-  expand = expansion(mult = c(0, 0.1))
-  )
-q <- q + labs(title = "Epicurve from 2018-01-01 to 2018-02-20")
-q <- q + labs(caption = fhi_caption())
-q <- q + splstyle::theme_fhi_lines_horizontal()
-  
-q <- q + splstyle::set_x_axis_vertical()
-  
-q
-```
-
 ## Epicurves for multiple geographical areas
 
 When we have multiple geographical areas, we use the function `lemon::facet_rep_wrap` to create multiple epicurves.
@@ -251,12 +231,12 @@ q <- q + splstyle::set_x_axis_vertical()
 q
 ```
 
-Daily line graph for all geographical areas with vertical x-axis labels
+## Weekly line graph for all geographical areas with vertical x-axis labels
 
 ```{r}
 
 d_line <- copy(w)
-d_line[, n := stats::rnorm(.N, 500)]
+d_line[, n := stats::rpois(.N, 10)]
 
 d_line <- d_line[location_code %in% c(
   "county03",
@@ -265,13 +245,13 @@ d_line <- d_line[location_code %in% c(
   "county30",
   "county34")]
 
-q <- ggplot(d_line, aes(x = isoyearweek, y = n, group = location_code))
+q <- ggplot(d_line, aes(x = isoyearweek, y = n, color = location_name, group = location_code))
 q <- q + geom_line(lwd = 1)
 q <- q + splstyle::theme_fhi_lines_horizontal()
 q <- q + splstyle::scale_color_fhi(NULL, palette = "primary")
 q <- q + splstyle::set_x_axis_vertical()
 q <- q + scale_x_discrete("Isoweek")
-# q <- q + expand_limits(y = 0)
+q <- q + expand_limits(y = 0)
 q <- q + scale_y_continuous("Number of reported cases",
   breaks = splstyle::pretty_breaks(5),
   expand = expansion(mult = c(0, 0.1))
