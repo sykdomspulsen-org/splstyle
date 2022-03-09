@@ -1,5 +1,6 @@
 #' Epicurve
 #' @param granularity_time day or isoweek
+#' @examples
 #' epicurve(d = d_day, granularity_time = "day")
 #' epicurve(d = d_week, granularity_time = "isoyearweek")
 #' @export
