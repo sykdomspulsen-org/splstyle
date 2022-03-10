@@ -85,7 +85,7 @@ format_nor_num_1 <- function(x) splstyle::format_nor(x, digits = 1)
 format_nor_num_2 <- function(x) splstyle::format_nor(x, digits = 2)
 
 
-#' format_nor_num_0
+#' format_nor_per100k_0
 #' Formats as a norwegian number with 0 digits and the suffix " /100k".
 #' Useful for scale labels
 #' @param x value
@@ -96,7 +96,7 @@ format_nor_per100k_0 <- function(x){
   return(retval)
 }
 
-#' format_nor_num_1
+#' format_nor_per100k_1
 #' Formats as a norwegian number with 1 digits and the suffix " /100k"
 #' Useful for scale labels
 #' @param x value
@@ -107,7 +107,7 @@ format_nor_per100k_1 <- function(x){
   return(retval)
 }
 
-#' format_nor_num_2
+#' format_nor_per100k_2
 #' Formats as a norwegian number with 2 digits and the suffix " /100k"
 #' Useful for scale labels
 #' @param x value

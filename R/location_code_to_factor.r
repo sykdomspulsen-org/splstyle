@@ -4,6 +4,9 @@
 #' @param label_if_not_unique The label of elements that are not unique
 #' @param reference Where you get your data
 #' @param direction -1 is reverse
+#' @examples
+#' location_code_to_factor("county03")
+#' location_code_to_factor(c("county03", "municip0301"))
 #' @export
 location_code_to_factor <- function(
   x,

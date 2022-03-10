@@ -2,6 +2,9 @@
 #' @param source A source string
 #' @param ... An unknown number of other sources to include
 #' @param max_width The max_width of the caption
+#' @examples
+#' caption_sources_with_dates("Sykdomspulsen, FHI")
+#' caption_sources_with_dates("Sykdomspulsen, FHI", "test"="ok", "testx"="osk")
 #' @export
 caption_sources_with_dates <- function(source, ..., max_width = 180){
   dots <- list(...)
