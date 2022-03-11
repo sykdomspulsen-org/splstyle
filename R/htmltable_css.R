@@ -86,8 +86,12 @@ htmltable_quick_style <- function(
 #' @export
 htmltable_css_risk_1_5 <- function(x, font_size = 14, max_risk_value = 5, palette = "blue") {
   stopifnot(x %in% 1:5)
-  stopifnot(palette %in% c("blue", "red", "red", "grayblue", "grayred", "grayred"))
-  color <- fhi_pal(palette, direction = 1)(max_risk_value)[x]
+  stopifnot(palette %in% c("blue", "red", "red", "grayblue", "grayred", "grayred", "yellow"))
+  if (palette == "yellow") {
+    color <- warning_color[["med"]]
+  } else {
+    color <- fhi_pal(palette, direction = 1)(max_risk_value)[x]
+  }
   retval <- htmltable_css_cell(font_size = font_size)
   retval <- glue::glue("{retval} background-color: {color};")
   if (x >= 4) retval <- paste0(retval, "color: white;")
@@ -98,7 +102,7 @@ htmltable_css_risk_1_5 <- function(x, font_size = 14, max_risk_value = 5, palett
 
 #' CSS style for htmltable for yellow background
 #' @export
-htmltable_css_background_yellow <- htmltable_css_risk_1_5(3, palette = "red")
+htmltable_css_background_yellow <- htmltable_css_risk_1_5(3, palette = "yellow")
 
 #' CSS style for htmltable for red background
 #' @export
