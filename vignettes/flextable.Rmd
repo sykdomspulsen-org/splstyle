@@ -24,18 +24,12 @@ knitr::opts_chunk$set(
 ## Checklist
 
 - Use `ft <- flextable::autofit(ft)`
-
+- If one or more of the columns are too cramped, use `flextable::width()` to adjust the width.
 - Use `ft <- flextable::font(ft, fontname = "calibri", part = "all")`
+- If the last row in the table is the total of the other rows, use `ft <- flextable::border(ft, i = nrow(tab), border.top = officer::fp_border(width = 1))` 
 - Use `ft <- flextable::align_text_col(ft, align = "right")`
 - Use `ft <- flextable::align(ft, j = 1, align = "left", part = "all")`
 
-- Make sure that your dataset contains all days/weeks (i.e. there can be days/weeks with 0 cases)
-- Use `q <- q + splstyle::theme_fhi_lines_horizontal()`
-- Use `q <- q + geom_col(fill = splstyle::base_color, width = 0.8)`
-- For `scale_y_continuous` use `breaks = splstyle::pretty_breaks(5)`
-- For `scale_y_continuous` use `expand = expansion(mult = c(0, 0.1))`
-- If the x-axis is too cramped, make the labels vertical `q <- q + splstyle::set_x_axis_vertical()`
-- Say when your data was extracted `q <- q + labs(caption = "Data extracted on 2018-02-20")`
 
 ```{r}
 library(flextable)
@@ -43,7 +37,7 @@ library(data.table)
 library(splstyle)
 ```
 
-## Data
+## Test data
 
 ```{r}
 set.seed(4)
@@ -55,23 +49,23 @@ d <- expand.grid(
   location_code=unique(fhidata::norway_locations_b2020$county_code),
   date = dates
 )
-# Convert to data.table
+# convert to data.table
 setDT(d)
 
 # aggregate
 d <- d[,
   .(
-    N = .N
+    n = .N
   ),
   keyby = .(
     location_code,
     date
   )
 ]
-# aggregated daily dataset that does not contain days with 0 cases
+
 print(d)
 
-# create skeleton
+# create skeleton with all the dates
 skeleton <- data.table(expand.grid(
   location_code = unique(fhidata::norway_locations_b2020$county_code),
   date = seq.Date(min(d$date), max(d$date), 1)
@@ -81,9 +75,22 @@ skeleton <- data.table(expand.grid(
 d <- merge(d, skeleton, by=c("location_code", "date"), all=T)
 
 # Fill in 'missing' Ns with 0
-d[is.na(N), N := 0]
+d[is.na(n), n := 0]
 
-d <- d[-1, ]
+# change the data.table to be wide instead of long
+d <- dcast.data.table(d, location_code ~ date, value.var = "n")
+
+# make a last row with the sum of all the other rows per column
+lastrow <- t(apply(d[, -1], 2, sum))
+lastrow <- data.table(location_code = "Totalt", lastrow)
+
+# change from location_code to location_name
+d[, location_code := splstyle::location_code_to_character(location_code)]
+
+# combine the two datasets together
+d <- rbind(d, lastrow)
+
+setnames(d, "location_code", "Fylke")
 
 # print
 print(d)
@@ -92,18 +99,20 @@ print(d)
 ## Table
 
 ```{r}
-  ft <- flextable::flextable(tab)
-  # ft <- flextable::theme_box(ft)
-  ft <- flextable::autofit(ft)
-  ft <- flextable::width(ft, width = 0.7)
-  ft <- flextable::width(ft, j = 1, width = 1.5)
-  ft <- flextable::width(ft, j = 2, width = 1.2)
+tab <- d
 
-  ft <- flextable::fontsize(ft, size = 10, part = "all")
-  ft <- flextable::font(ft, fontname = "calibri", part = "all")
-  ft <- flextable::align_text_col(ft, align = "right")
-  ft <- flextable::align(ft, j = 1, align = "left", part = "all")
+ft <- flextable::flextable(tab)
+ft <- flextable::autofit(ft)
+ft <- flextable::width(ft, width = 0.7)
+ft <- flextable::width(ft, j = 1, width = 1.5)
+ft <- flextable::width(ft, j = 2:6, width = 1)
 
-  ft
+ft <- flextable::fontsize(ft, size = 10, part = "all")
+ft <- flextable::font(ft, fontname = "calibri", part = "all")
+ft <- flextable::border(ft, i = nrow(tab), border.top = officer::fp_border(width = 1))
+ft <- flextable::align_text_col(ft, align = "right")
+ft <- flextable::align(ft, j = 1, align = "left", part = "all")
+
+ft
 ```
 
