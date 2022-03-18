@@ -103,10 +103,8 @@ tab <- d
 
 ft <- flextable::flextable(tab)
 ft <- flextable::autofit(ft)
-ft <- flextable::width(ft, width = 0.7)
 ft <- flextable::width(ft, j = 1, width = 1.5)
 ft <- flextable::width(ft, j = 2:6, width = 1)
-
 ft <- flextable::fontsize(ft, size = 10, part = "all")
 ft <- flextable::font(ft, fontname = "calibri", part = "all")
 ft <- flextable::border(ft, i = nrow(tab), border.top = officer::fp_border(width = 1))
