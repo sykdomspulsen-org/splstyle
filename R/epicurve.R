@@ -1,18 +1,40 @@
 #' Epicurve
+#' @param x Dataset
 #' @param granularity_time day or isoweek
+#' @param ... Arguments
 #' @examples
-#' epicurve(d = d_day, granularity_time = "day")
-#' epicurve(d = d_week, granularity_time = "isoyearweek")
+#' epicurve(x = d_day, granularity_time = "day")
+#' epicurve(x = d_week, granularity_time = "isoyearweek")
 #' @export
-epicurve <- function(d, granularity_time = "day") {
+epicurve <- function(x, granularity_time = "day", ...) {
+  UseMethod("epicurve", x)
+}
+
+#' Epicurve
+#' @param x Dataset
+#' @param granularity_time day or isoweek
+#' @param ... Arguments
+#' @examples
+#' d <- spltidy::generate_test_data() %>% setnames("deaths_n", "cases_n")
+#' epicurve(x = d_day, granularity_time = "day")
+#' epicurve(x = d, granularity_time = "isoweek")
+#' @export
+epicurve.default <- function(x, granularity_time = "day", ...) {
+
+  stopifnot(granularity_time %in% c("day", "isoweek"))
+  if(FALSE){
+    stop("this is an error message")
+  }
 
   # d <- spltidy::generate_test_data() %>% setnames("deaths_n", "cases_n")
   # d[, date := as.Date("2022-03-01")]
   # granularity_time <- "day"
   # granularity_time <- "isoyearweek"
 
+  dots <- list(...)
+
   if(granularity_time == "day"){
-    q <- ggplot(d, aes(x = date, y = cases_n))
+    q <- ggplot(x, aes(x = date, y = cases_n))
     q <- q + scale_x_date("Date")
   } else{
     q <- ggplot(d, aes(x = isoyearweek, y = cases_n))
