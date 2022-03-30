@@ -20,18 +20,24 @@ epicurve <- function(x, granularity_time = "day", ...) {
 #' epicurve(x = d, granularity_time = "isoweek")
 #' @export
 epicurve.default <- function(x,
+                             facet_wrap = NULL,
+                             facet_ncol = NULL,
                              var_x = "date",
                              var_y = "cases_n",
-                             breaks_x = splstyle::every_nth(5),
+                             breaks_x = NULL,
                              lab_x = NULL,
                              lab_y = NULL,
                              lab_main = NULL,
                              lab_sub = NULL,
+                             lab_caption = splstyle::fhi_caption(),
                              format_y = splstyle::format_nor_num_0,
                              ...) {
 
   # lab_y = "Number of reported deaths"
   # var_y = "N"
+  # facet_wrap = "location_code"
+  # facet_ncol = 2
+  # breaks_x = splstyle::every_nth(5)
 
   stopifnot(var_x %in% c("date", "isoyearweek"))
   if(FALSE){
@@ -49,13 +55,19 @@ epicurve.default <- function(x,
   }
 
   q <- q + geom_col(fill = splstyle::base_color, width = 0.8)
+
+  q <- q + lemon::facet_rep_wrap(~get(facet_wrap), repeat.tick.labels = "y", ncol = facet_ncol)
+
+
   q <- q + scale_y_continuous(name = lab_y,
                               expand = expansion(mult = c(0, 0.1)),
                               breaks = splstyle::pretty_breaks(5),
                               labels = format_y
   )
-  # q <- q + labs(caption = fhi_caption())
-  q <- q + labs(title = lab_main, subtitle = lab_sub)
+  q <- q + labs(caption = fhi_caption())
+  q <- q + labs(title = lab_main,
+                subtitle = lab_sub,
+                caption = lab_caption)
   q <- q + splstyle::theme_fhi_lines_horizontal()
   q
 }
@@ -69,7 +81,8 @@ test_data <- function(var_x = NULL) {
                   20000,
                   replace = T)
   d <- expand.grid(
-    location_code = "norge",
+    # location_code = "norge",
+    location_code = unique(fhidata::norway_locations_b2020$county_code),
     date = dates
   )
   # Convert to data.table
@@ -96,7 +109,8 @@ test_data <- function(var_x = NULL) {
 
   # create skeleton
   skeleton <- data.table(expand.grid(
-    location_code = "norge",
+    # location_code = "norge",
+    location_code = unique(fhidata::norway_locations_b2020$county_code),
     date = seq.Date(min(d$date), max(d$date), 1)
   ))
 
