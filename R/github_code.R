@@ -51,7 +51,7 @@ print.github_code <- function(x, ...){
     cat(glue::glue("<a href='{link}'>{link}</a>\n\n\n"))
   }
 
-  max_width <- log(max_lines, base = 10) |>
+  max_width <- log(max_lines, base = 10) %>%
     floor() + 1
   for(i in lines){
     cat(formatC(i, width = max_width), " | ", x[i], "\n", sep = "")
