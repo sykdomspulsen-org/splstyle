@@ -20,6 +20,9 @@ epicurve <- function(x, granularity_time = "day", ...) {
 #' epicurve(x = d, granularity_time = "isoweek")
 #' @export
 epicurve.default <- function(x,
+                             type = "single",
+                             fill_var = "location_code",
+                             fill_lab = "Location",
                              facet_wrap = NULL,
                              facet_ncol = NULL,
                              var_x = "date",
@@ -37,16 +40,32 @@ epicurve.default <- function(x,
   # var_y = "N"
   # facet_wrap = "location_code"
   # facet_ncol = 2
-  # breaks_x = splstyle::every_nth(5)
+  # breaks_x = splstyle::every_nth(2)
 
   stopifnot(var_x %in% c("date", "isoyearweek"))
+  stopifnot(type %in% c("single", "stacked", "dodged"))
+
+
   if(FALSE){
     stop("this is an error message")
   }
 
   # dots <- list(...)
 
-  q <- ggplot(x, aes(x = get(var_x), y = get(var_y)))
+  if(type == "stacked"){
+    q <- ggplot(x, aes(x = get(var_x), y = get(var_y), fill = get(fill_var)))
+    q <- q + geom_col(width = 0.8)
+    q <- q + splstyle::scale_fill_fhi(fill_lab, palette="primary")
+  } else if(type == "single"){
+    q <- ggplot(x, aes(x = get(var_x), y = get(var_y)))
+    q <- q + geom_col(fill = splstyle::base_color, width = 0.8)
+  } else if (type == "dodged") {
+    q <- ggplot(x, aes(x = get(var_x), y = get(var_y), fill = get(fill_var)))
+    q <- q + geom_bar(position = "dodge", stat = "identity", width = 0.8)
+    q <- q + splstyle::scale_fill_fhi(fill_lab, palette="primary")
+
+
+  }
 
   if(var_x == "date"){
     q <- q + scale_x_date(name = lab_x)
@@ -54,10 +73,10 @@ epicurve.default <- function(x,
     q <- q + scale_x_discrete(name = lab_x, breaks = breaks_x)
   }
 
-  q <- q + geom_col(fill = splstyle::base_color, width = 0.8)
+  if(!is.null(facet_wrap)){
+    q <- q + lemon::facet_rep_wrap(~get(facet_wrap), repeat.tick.labels = "y", ncol = facet_ncol)
 
-  q <- q + lemon::facet_rep_wrap(~get(facet_wrap), repeat.tick.labels = "y", ncol = facet_ncol)
-
+  }
 
   q <- q + scale_y_continuous(name = lab_y,
                               expand = expansion(mult = c(0, 0.1)),
@@ -69,6 +88,7 @@ epicurve.default <- function(x,
                 subtitle = lab_sub,
                 caption = lab_caption)
   q <- q + splstyle::theme_fhi_lines_horizontal()
+  q <- q + splstyle::set_x_axis_vertical()
   q
 }
 
@@ -122,6 +142,14 @@ test_data <- function(var_x = NULL) {
 
   # Now you have a clean aggregated daily dataset that contains days with 0 cases!
   print(d)
+
+  d <- d[location_code %in% c(
+    "county03",
+    "county11",
+    "county15"
+    # "county30",
+    # "county34"
+  )]
 
   if(!is.null(var_x)){
     # create 3 new variables:
