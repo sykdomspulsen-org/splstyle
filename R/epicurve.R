@@ -12,8 +12,20 @@ epicurve <- function(x, granularity_time = "day", ...) {
 
 #' Epicurve
 #' @param x Dataset
-#' @param granularity_time day or isoweek
-#' @param ... Arguments
+#' @param type "single", "stacked" or "dodged"
+#' @param fill_var
+#' @param fill_lab
+#' @param facet_wrap What columm to
+#' @param facet_ncol
+#' @param var_x "date" or "isoyearweek"
+#' @param var_y The name of the variable to use on the y-axis of the graph
+#' @param breaks_x Use splstyle::every_nth() to choose how many ticks to show on the x-axis
+#' @param lab_x The label of the x-axis
+#' @param lab_y The label of the y-axis
+#' @param lab_main The main title of the graph
+#' @param lab_sub The subtitle of the graph
+#' @param lab_caption
+#' @param format_y How the y-axis ticks should be formatted. For example splstyle::format_nor_num_0 or fhiplot::format_nor_perc_0
 #' @examples
 #' d <- spltidy::generate_test_data() %>% setnames("deaths_n", "cases_n")
 #' epicurve(x = d_day, granularity_time = "day")
@@ -21,7 +33,7 @@ epicurve <- function(x, granularity_time = "day", ...) {
 #' @export
 epicurve.default <- function(x,
                              type = "single",
-                             fill_var = "location_code",
+                             fill_var = NULL,
                              fill_lab = "Location",
                              facet_wrap = NULL,
                              facet_ncol = NULL,
@@ -41,6 +53,7 @@ epicurve.default <- function(x,
   # facet_wrap = "location_code"
   # facet_ncol = 2
   # breaks_x = splstyle::every_nth(2)
+  # fill_var = "location_code"
 
   stopifnot(var_x %in% c("date", "isoyearweek"))
   stopifnot(type %in% c("single", "stacked", "dodged"))
@@ -51,6 +64,11 @@ epicurve.default <- function(x,
   }
 
   # dots <- list(...)
+
+  if(fill_var == "location_code"){
+    x[, location_name := splstyle::location_code_to_character(location_code)]
+  }
+
 
   if(type == "stacked"){
     q <- ggplot(x, aes(x = get(var_x), y = get(var_y), fill = get(fill_var)))
@@ -83,7 +101,7 @@ epicurve.default <- function(x,
                               breaks = splstyle::pretty_breaks(5),
                               labels = format_y
   )
-  q <- q + labs(caption = fhi_caption())
+  # q <- q + labs(caption = fhi_caption())
   q <- q + labs(title = lab_main,
                 subtitle = lab_sub,
                 caption = lab_caption)
