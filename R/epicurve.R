@@ -28,17 +28,18 @@ epicurve <- function(x, granularity_time = "day", ...) {
 #' @param format_y How the y-axis ticks should be formatted. For example splstyle::format_nor_num_0 or fhiplot::format_nor_perc_0
 #' @examples
 #' d <- spltidy::generate_test_data() %>% setnames("deaths_n", "cases_n")
-#' epicurve(x = d_day, granularity_time = "day")
-#' epicurve(x = d, granularity_time = "isoweek")
+#' epicurve(x, type = "single", var_y = "N")
+#' epicurve(x, type = "stacked", fill_var = "location_code", var_y = "N")
+#' epicurve(x, type = "dodged", fill_var = "location_code", var_y = "N")
 #' @export
 epicurve.default <- function(x,
                              type = "single",
                              fill_var = NULL,
-                             fill_lab = "Location",
+                             fill_lab = NULL,
                              facet_wrap = NULL,
                              facet_ncol = NULL,
-                             var_x = "date",
-                             var_y = "cases_n",
+                             var_x = "isoyearweek",
+                             var_y,
                              breaks_x = NULL,
                              lab_x = NULL,
                              lab_y = NULL,
@@ -65,21 +66,21 @@ epicurve.default <- function(x,
 
   # dots <- list(...)
 
-  if(fill_var == "location_code"){
-    x[, location_name := splstyle::location_code_to_character(location_code)]
-  }
+  # if(fill_var == "location_code"){
+  #   x[, location_name := splstyle::location_code_to_character(location_code)]
+  # }
 
 
   if(type == "stacked"){
-    q <- ggplot(x, aes(x = get(var_x), y = get(var_y), fill = get(fill_var)))
+    q <- ggplot(x, aes_string(x = var_x, y = var_y, fill = fill_var))
     q <- q + geom_col(width = 0.8)
     q <- q + splstyle::scale_fill_fhi(fill_lab, palette="primary")
   } else if(type == "single"){
-    q <- ggplot(x, aes(x = get(var_x), y = get(var_y)))
+    q <- ggplot(x, aes_string(x = var_x, y = var_y))
     q <- q + geom_col(fill = splstyle::base_color, width = 0.8)
   } else if (type == "dodged") {
-    q <- ggplot(x, aes(x = get(var_x), y = get(var_y), fill = get(fill_var)))
-    q <- q + geom_bar(position = "dodge", stat = "identity", width = 0.8)
+    q <- ggplot(x, aes_string(x = var_x, y = var_y, fill = fill_var))
+    q <- q + geom_col(position = "dodge", width = 0.8)
     q <- q + splstyle::scale_fill_fhi(fill_lab, palette="primary")
 
 
@@ -127,7 +128,7 @@ test_data <- function(var_x = NULL) {
   setDT(d)
 
   # print
-  print(d)
+  # print(d)
 
   # Convert to data.table
   setDT(d)
@@ -143,7 +144,7 @@ test_data <- function(var_x = NULL) {
          )
   ]
   # aggregated daily dataset that does not contain days with 0 cases
-  print(d)
+  # print(d)
 
   # create skeleton
   skeleton <- data.table(expand.grid(
