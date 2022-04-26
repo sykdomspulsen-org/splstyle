@@ -15,7 +15,7 @@ epicurve <- function(x, granularity_time = "day", ...) {
 #' @param type "single", "stacked" or "dodged"
 #' @param fill_var
 #' @param fill_lab
-#' @param facet_wrap What column in the dataset to spli
+#' @param facet_wrap What column in the dataset to use to split the dataset.
 #' @param facet_ncol How many columns with graphs
 #' @param var_x "date" or "isoyearweek"
 #' @param var_y The name of the variable to use on the y-axis of the graph

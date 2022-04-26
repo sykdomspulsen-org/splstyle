@@ -4,15 +4,43 @@
 \alias{epicurve}
 \title{Epicurve}
 \usage{
-epicurve(x, granularity_time = "day")
+epicurve(x, granularity_time = "day", ...)
 }
 \arguments{
-\item{granularity_time}{day or isoweek}
+\item{x}{Dataset}
+
+\item{type}{"single", "stacked" or "dodged"}
+
+\item{facet_wrap}{What column in the dataset to use to split the dataset.}
+
+\item{facet_ncol}{How many columns with graphs}
+
+\item{var_x}{"date" or "isoyearweek"}
+
+\item{var_y}{The name of the variable to use on the y-axis of the graph}
+
+\item{breaks_x}{Use splstyle::every_nth() to choose how many ticks to show on the x-axis}
+
+\item{lab_x}{The label of the x-axis}
+
+\item{lab_y}{The label of the y-axis}
+
+\item{lab_main}{The main title of the graph}
+
+\item{lab_sub}{The subtitle of the graph}
+
+\item{lab_caption}{If not specified, splstyle::fhi_caption() is used as the lab_caption.}
+
+\item{format_y}{How the y-axis ticks should be formatted. For example splstyle::format_nor_num_0 or fhiplot::format_nor_perc_0}
+
+\item{scale_y}{How to scale the y-axis if the graph is split with facet_wrap. Free or fixed.}
 }
 \description{
 Epicurve
 }
 \examples{
-epicurve(x = d_day, granularity_time = "day")
-epicurve(x = d_week, granularity_time = "isoyearweek")
+x <- spltidy::generate_test_data()
+epicurve(x[location_code == "county03"], type = "single", var_y = "deaths_n")
+epicurve(x, type = "stacked", fill_var = "location_code", var_y = "deaths_n")
+epicurve(x, type = "dodged", fill_var = "location_code", var_y = "deaths_n")
 }
