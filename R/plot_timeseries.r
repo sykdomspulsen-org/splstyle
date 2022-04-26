@@ -1,6 +1,20 @@
 
  # data <- test_data_time_series()
  # plot_timeseries(data, var_y = c("cases_n", "deaths_n"))
+ plot_timeseries(data,
+                  var_y = c("Covid cases" = "cases_n", "Covid deaths" ="deaths_n", "Covid tests" = "tests_n"),
+                  breaks_x = splstyle::every_nth(2),
+                  lab_main = "Norge",
+                  lab_sub = "Antall tilfeller og dødsfall",
+                  lab_caption = "Data er oppdatert",
+                 lab_y = "Antall",
+                 lab_x = "Uker",
+                 lab_legend = "Legend",
+                 palette = "warning"
+
+)
+
+
 #  plot_timeseries(data,
 #                   var_y = c("Covid cases" = "cases_n", "Covid deaths" ="deaths_n"),
 #                   breaks_x = splstyle::every_nth(2),
@@ -8,7 +22,10 @@
 #                   lab_sub = "Antall tilfeller og dødsfall",
 #                   lab_caption = "Data er oppdatert",
 #                  lab_y = "Antall",
-#                  lab_x = "Uker"
+#                  lab_x = "Uker",
+#                  lab_legend = "Legend",
+#                  facet_wrap = "location_code",
+#                  facet_ncol = 4
 #
 # )
 
@@ -21,13 +38,19 @@ plot_timeseries <- function(data,
                             lab_sub = NULL,
                             lab_caption = NULL,
                             lab_y = NULL,
-                            lab_x = NULL
+                            lab_x = NULL,
+                            lab_legend = NULL,
+                            legend_position = "bottom",
+                            format_y = splstyle::format_nor_num_0,
+                            facet_wrap = NULL,
+                            facet_ncol = NULL,
+                            palette = "primary"
                             ) {
 
 
 
   d <- melt(data,
-              id.vars = c("isoyearweek"),
+              id.vars = c(facet_wrap, "isoyearweek"),
               measure.vars = list(n = var_y),
               value.name = "n"
   )
@@ -43,16 +66,25 @@ plot_timeseries <- function(data,
   q <- q + scale_x_discrete(name = lab_x, breaks = breaks_x)
   q <- q + scale_y_continuous(name = lab_y,
                               breaks = fhiplot::pretty_breaks(10),
-                              expand = expand_scale(mult = c(0, 0.1))
+                              expand = expand_scale(mult = c(0, 0.1)),
+                              labels = format_y
                               )
+  if(!is.null(facet_wrap)){
+    q <- q + lemon::facet_rep_wrap(~get(facet_wrap), repeat.tick.labels = "y", ncol = facet_ncol)
+
+  }
+
+
+
   q <- q + expand_limits(y = 0)
-  q <- q + fhiplot::scale_color_fhi(NULL, palette = "primary", direction = 1)
-  q <- q + guides(color = guide_legend(order = 1, reverse = F), color = guide_legend(order = 2))
-  q <- q + splstyle::theme_fhi_lines_horizontal()
+  q <- q + fhiplot::scale_color_fhi(lab_legend, palette = palette, direction = 1)
+  # q <- q + guides(color = guide_legend(order = 1, reverse = F), color = guide_legend(order = 2))
+  q <- q + splstyle::theme_fhi_lines_horizontal(legend_position = legend_position)
   # q <- q + fhiplot::theme_fhi_basic(base_size = 9, legend_position = "bottom")
   q <- q + labs(title = lab_main,
                 subtitle = lab_sub,
-                caption = lab_caption)
+                caption = lab_caption
+                )
   q <- q + fhiplot::set_x_axis_vertical()
   q
 
@@ -92,6 +124,7 @@ test_data_time_series <- function(var_x = "isoyearweek") {
   ]
 
   d[, deaths_n := cases_n]
+  d[, tests_n := cases_n]
   # aggregated daily dataset that does not contain days with 0 cases
   # print(d)
 
@@ -127,7 +160,8 @@ test_data_time_series <- function(var_x = "isoyearweek") {
     w <- d[,
            .(
              cases_n = sum(cases_n),
-             deaths_n = sum(deaths_n)
+             deaths_n = sum(deaths_n),
+             tests_n = sum(tests_n)
            ),
            keyby = .(
              location_code,
@@ -136,6 +170,7 @@ test_data_time_series <- function(var_x = "isoyearweek") {
     ]
 
     w[, deaths_n := deaths_n - 100]
+    w[, tests_n := tests_n - 200]
     w[, cases_n := as.numeric(cases_n)]
     print(w)
     return(w)

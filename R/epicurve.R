@@ -105,7 +105,8 @@ epicurve.default <- function(x,
   # q <- q + labs(caption = fhi_caption())
   q <- q + labs(title = lab_main,
                 subtitle = lab_sub,
-                caption = lab_caption)
+                caption = lab_caption,
+                )
   q <- q + splstyle::theme_fhi_lines_horizontal()
   q <- q + splstyle::set_x_axis_vertical()
   q
