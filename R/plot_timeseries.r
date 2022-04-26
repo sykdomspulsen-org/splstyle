@@ -1,18 +1,17 @@
 
  # data <- test_data_time_series()
  # plot_timeseries(data, var_y = c("cases_n", "deaths_n"))
- plot_timeseries(data,
-                  var_y = c("Covid cases" = "cases_n", "Covid deaths" ="deaths_n", "Covid tests" = "tests_n"),
-                  breaks_x = splstyle::every_nth(2),
-                  lab_main = "Norge",
-                  lab_sub = "Antall tilfeller og dødsfall",
-                  lab_caption = "Data er oppdatert",
-                 lab_y = "Antall",
-                 lab_x = "Uker",
-                 lab_legend = "Legend",
-                 palette = "warning"
-
-)
+#  plot_timeseries(data,
+#                   var_y = c("Covid cases" = "cases_n", "Covid deaths" ="deaths_n", "Covid tests" = "tests_n"),
+#                   breaks_x = splstyle::every_nth(2),
+#                   lab_main = "Norge",
+#                   lab_sub = "Antall tilfeller og dødsfall",
+#                  lab_y = "Antall",
+#                  lab_x = "Uker",
+#                  lab_legend = "Legend",
+#                  palette = "warning"
+#
+# )
 
 
 #  plot_timeseries(data,
@@ -20,7 +19,6 @@
 #                   breaks_x = splstyle::every_nth(2),
 #                   lab_main = "Norge",
 #                   lab_sub = "Antall tilfeller og dødsfall",
-#                   lab_caption = "Data er oppdatert",
 #                  lab_y = "Antall",
 #                  lab_x = "Uker",
 #                  lab_legend = "Legend",
@@ -36,7 +34,7 @@ plot_timeseries <- function(data,
                             breaks_x = NULL,
                             lab_main = NULL,
                             lab_sub = NULL,
-                            lab_caption = NULL,
+                            lab_caption = splstyle::fhi_caption(),
                             lab_y = NULL,
                             lab_x = NULL,
                             lab_legend = NULL,
@@ -44,7 +42,8 @@ plot_timeseries <- function(data,
                             format_y = splstyle::format_nor_num_0,
                             facet_wrap = NULL,
                             facet_ncol = NULL,
-                            palette = "primary"
+                            palette = "primary",
+                            scale_y = "free"
                             ) {
 
 
@@ -70,7 +69,7 @@ plot_timeseries <- function(data,
                               labels = format_y
                               )
   if(!is.null(facet_wrap)){
-    q <- q + lemon::facet_rep_wrap(~get(facet_wrap), repeat.tick.labels = "y", ncol = facet_ncol)
+    q <- q + lemon::facet_rep_wrap(~get(facet_wrap), repeat.tick.labels = "y", scales = scale_y, ncol = facet_ncol)
 
   }
 

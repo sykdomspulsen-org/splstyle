@@ -26,6 +26,7 @@ epicurve <- function(x, granularity_time = "day", ...) {
 #' @param lab_sub The subtitle of the graph
 #' @param lab_caption If not specified, splstyle::fhi_caption() is used as the lab_caption.
 #' @param format_y How the y-axis ticks should be formatted. For example splstyle::format_nor_num_0 or fhiplot::format_nor_perc_0
+#' @param scale_y How to scale the y-axis if the graph is split with facet_wrap. Free or fixed.
 #' @examples
 #' x <- spltidy::generate_test_data()
 #' epicurve(x[location_code == "county03"], type = "single", var_y = "deaths_n")
@@ -47,6 +48,7 @@ epicurve.default <- function(x,
                              lab_sub = NULL,
                              lab_caption = splstyle::fhi_caption(),
                              format_y = splstyle::format_nor_num_0,
+                             scale_y = "free",
                              ...) {
 
   # lab_y = "Number of reported deaths"
