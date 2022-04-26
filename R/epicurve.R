@@ -15,8 +15,8 @@ epicurve <- function(x, granularity_time = "day", ...) {
 #' @param type "single", "stacked" or "dodged"
 #' @param fill_var
 #' @param fill_lab
-#' @param facet_wrap What columm to
-#' @param facet_ncol
+#' @param facet_wrap What column in the dataset to spli
+#' @param facet_ncol How many columns with graphs
 #' @param var_x "date" or "isoyearweek"
 #' @param var_y The name of the variable to use on the y-axis of the graph
 #' @param breaks_x Use splstyle::every_nth() to choose how many ticks to show on the x-axis
@@ -24,13 +24,13 @@ epicurve <- function(x, granularity_time = "day", ...) {
 #' @param lab_y The label of the y-axis
 #' @param lab_main The main title of the graph
 #' @param lab_sub The subtitle of the graph
-#' @param lab_caption
+#' @param lab_caption If not specified, splstyle::fhi_caption() is used as the lab_caption.
 #' @param format_y How the y-axis ticks should be formatted. For example splstyle::format_nor_num_0 or fhiplot::format_nor_perc_0
 #' @examples
-#' d <- spltidy::generate_test_data() %>% setnames("deaths_n", "cases_n")
-#' epicurve(x, type = "single", var_y = "N")
-#' epicurve(x, type = "stacked", fill_var = "location_code", var_y = "N")
-#' epicurve(x, type = "dodged", fill_var = "location_code", var_y = "N")
+#' x <- spltidy::generate_test_data()
+#' epicurve(x[location_code == "county03"], type = "single", var_y = "deaths_n")
+#' epicurve(x, type = "stacked", fill_var = "location_code", var_y = "deaths_n")
+#' epicurve(x, type = "dodged", fill_var = "location_code", var_y = "deaths_n")
 #' @export
 epicurve.default <- function(x,
                              type = "single",
