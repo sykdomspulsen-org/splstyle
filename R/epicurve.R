@@ -46,8 +46,8 @@ epicurve.default <- function(x,
                              lab_y = NULL,
                              lab_main = NULL,
                              lab_sub = NULL,
-                             lab_caption = splstyle::fhi_caption(),
-                             format_y = splstyle::format_nor_num_0,
+                             lab_caption = fhi_caption(),
+                             format_y = format_nor_num_0,
                              scale_y = "free",
                              ...) {
 
@@ -55,7 +55,7 @@ epicurve.default <- function(x,
   # var_y = "N"
   # facet_wrap = "location_code"
   # facet_ncol = 2
-  # breaks_x = splstyle::every_nth(2)
+  # breaks_x = every_nth(2)
   # fill_var = "location_code"
 
   stopifnot(var_x %in% c("date", "isoyearweek"))
@@ -69,21 +69,21 @@ epicurve.default <- function(x,
   # dots <- list(...)
 
   # if(fill_var == "location_code"){
-  #   x[, location_name := splstyle::location_code_to_character(location_code)]
+  #   x[, location_name := location_code_to_character(location_code)]
   # }
 
 
   if(type == "stacked"){
     q <- ggplot(x, aes_string(x = var_x, y = var_y, fill = fill_var))
     q <- q + geom_col(width = 0.8)
-    q <- q + splstyle::scale_fill_fhi(fill_lab, palette="primary")
+    q <- q + scale_fill_fhi(fill_lab, palette="primary")
   } else if(type == "single"){
     q <- ggplot(x, aes_string(x = var_x, y = var_y))
-    q <- q + geom_col(fill = splstyle::base_color, width = 0.8)
+    q <- q + geom_col(fill = base_color, width = 0.8)
   } else if (type == "dodged") {
     q <- ggplot(x, aes_string(x = var_x, y = var_y, fill = fill_var))
     q <- q + geom_col(position = "dodge", width = 0.8)
-    q <- q + splstyle::scale_fill_fhi(fill_lab, palette="primary")
+    q <- q + scale_fill_fhi(fill_lab, palette="primary")
 
 
   }
@@ -101,7 +101,7 @@ epicurve.default <- function(x,
 
   q <- q + scale_y_continuous(name = lab_y,
                               expand = expansion(mult = c(0, 0.1)),
-                              breaks = splstyle::pretty_breaks(5),
+                              breaks = pretty_breaks(5),
                               labels = format_y
   )
   # q <- q + labs(caption = fhi_caption())
@@ -109,8 +109,8 @@ epicurve.default <- function(x,
                 subtitle = lab_sub,
                 caption = lab_caption,
                 )
-  q <- q + splstyle::theme_fhi_lines_horizontal()
-  q <- q + splstyle::set_x_axis_vertical()
+  q <- q + theme_fhi_lines_horizontal()
+  q <- q + set_x_axis_vertical()
   q
 }
 
