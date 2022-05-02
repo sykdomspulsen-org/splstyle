@@ -21,7 +21,7 @@
 #' epicurve(x, type = "stacked", fill_var = "location_code", var_y = "deaths_n")
 #' epicurve(x, type = "dodged", fill_var = "location_code", var_y = "deaths_n")
 #' @export
-epicurve <- function(x,
+plot_epicurve <- function(x,
                      type = "single",
                      fill_var = NULL,
                      fill_lab = NULL,
@@ -64,7 +64,7 @@ epicurve <- function(x,
 #' epicurve(x, type = "stacked", fill_var = "location_code", var_y = "deaths_n")
 #' epicurve(x, type = "dodged", fill_var = "location_code", var_y = "deaths_n")
 #' @export
-epicurve.default <- function(x,
+plot_epicurve.default <- function(x,
                              type = "single",
                              fill_var = NULL,
                              fill_lab = NULL,
