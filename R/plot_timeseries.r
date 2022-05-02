@@ -45,6 +45,7 @@
 #' @param palette What palette to use for the lines. The default is "primary".
 #' @param palette_dir 1 or -1.
 #' @param scale_y How to scale the y-axis if the graph is split with facet_wrap. Free or fixed.
+#' @export
 plot_timeseries <- function(data,
                             var_x = "isoyearweek",
                             var_y,
