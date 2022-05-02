@@ -11,15 +11,16 @@ plot_timeseries(
   breaks_x = NULL,
   lab_main = NULL,
   lab_sub = NULL,
-  lab_caption = splstyle::fhi_caption(),
+  lab_caption = fhi_caption(),
   lab_y = NULL,
   lab_x = NULL,
   lab_legend = NULL,
   legend_position = "bottom",
-  format_y = splstyle::format_nor_num_0,
+  format_y = format_nor_num_0,
   facet_wrap = NULL,
   facet_ncol = NULL,
   palette = "primary",
+  palette_dir = 1,
   scale_y = "free"
 )
 }
@@ -53,6 +54,8 @@ plot_timeseries(
 \item{facet_ncol}{How many columns with graphs if facet_wrap is used.}
 
 \item{palette}{What palette to use for the lines. The default is "primary".}
+
+\item{palette_dir}{1 or -1.}
 
 \item{scale_y}{How to scale the y-axis if the graph is split with facet_wrap. Free or fixed.}
 }
