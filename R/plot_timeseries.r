@@ -1,18 +1,17 @@
 
  # data <- test_data_time_series()
- # plot_timeseries(data, var_y = c("cases_n", "deaths_n"))
- plot_timeseries(data,
-                  var_y = c("Covid cases" = "cases_n", "Covid deaths" ="deaths_n", "Covid tests" = "tests_n"),
-                  breaks_x = every_nth(2),
-                  lab_main = "Norge",
-                  lab_sub = "Antall tilfeller og dødsfall",
-                 lab_y = "Antall",
-                 lab_x = "Uker",
-                 lab_legend = "Legend",
-                 palette = "warning",
-                 palette_dir = -1
-
-)
+#  plot_timeseries(data,
+#                   var_y = c("Covid cases" = "cases_n", "Covid deaths" ="deaths_n", "Covid tests" = "tests_n"),
+#                   breaks_x = every_nth(2),
+#                   lab_main = "Norge",
+#                   lab_sub = "Antall tilfeller og dødsfall",
+#                  lab_y = "Antall",
+#                  lab_x = "Uker",
+#                  lab_legend = "Legend",
+#                  palette = "warning",
+#                  palette_dir = -1
+#
+# )
 
 
 #  plot_timeseries(data,

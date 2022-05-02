@@ -1,12 +1,43 @@
 #' Epicurve
 #' @param x Dataset
-#' @param granularity_time day or isoweek
-#' @param ... Arguments
+#' @param type "single", "stacked" or "dodged"
+#' @param fill_var
+#' @param fill_lab
+#' @param facet_wrap What column in the dataset to use to split the dataset.
+#' @param facet_ncol How many columns with graphs
+#' @param var_x "date" or "isoyearweek"
+#' @param var_y The name of the variable to use on the y-axis of the graph
+#' @param breaks_x Use splstyle::every_nth() to choose how many ticks to show on the x-axis
+#' @param lab_x The label of the x-axis
+#' @param lab_y The label of the y-axis
+#' @param lab_main The main title of the graph
+#' @param lab_sub The subtitle of the graph
+#' @param lab_caption If not specified, splstyle::fhi_caption() is used as the lab_caption.
+#' @param format_y How the y-axis ticks should be formatted. For example splstyle::format_nor_num_0 or fhiplot::format_nor_perc_0
+#' @param scale_y How to scale the y-axis if the graph is split with facet_wrap. Free or fixed.
 #' @examples
-#' epicurve(x = d_day, granularity_time = "day")
-#' epicurve(x = d_week, granularity_time = "isoyearweek")
+#' x <- spltidy::generate_test_data()
+#' epicurve(x[location_code == "county03"], type = "single", var_y = "deaths_n")
+#' epicurve(x, type = "stacked", fill_var = "location_code", var_y = "deaths_n")
+#' epicurve(x, type = "dodged", fill_var = "location_code", var_y = "deaths_n")
 #' @export
-epicurve <- function(x, granularity_time = "day", ...) {
+epicurve <- function(x,
+                     type = "single",
+                     fill_var = NULL,
+                     fill_lab = NULL,
+                     facet_wrap = NULL,
+                     facet_ncol = NULL,
+                     var_x = "isoyearweek",
+                     var_y,
+                     breaks_x = NULL,
+                     lab_x = NULL,
+                     lab_y = NULL,
+                     lab_main = NULL,
+                     lab_sub = NULL,
+                     lab_caption = fhi_caption(),
+                     format_y = format_nor_num_0,
+                     scale_y = "free",
+                     ...) {
   UseMethod("epicurve", x)
 }
 
