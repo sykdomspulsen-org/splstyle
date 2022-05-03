@@ -14,11 +14,20 @@ format_date_nor <- function(x = lubridate::today(), format = "%d.%m.%Y") {
   return(retval)
 }
 
+#' format_datetime_nor
+#' @param x value
+#' @param format the desired format
+#' @export
+format_datetime_nor <- function(x = lubridate::now(), format = "%d.%m.%Y kl. %H:%S") {
+  retval <- format.Date(x, format = format)
+  return(retval)
+}
+
 #' format_date_nor
 #' @param x value
 #' @param format the desired format
 #' @export
-format_datetime_file <- function(x = lubridate::now(), format = "%Y-%m-%d_%H%M") {
+format_datetime_file <- function(x = lubridate::now(), format = "%Y-%m-%d_%H%M%S") {
   retval <- format.Date(x, format = format)
   return(retval)
 }
