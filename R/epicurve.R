@@ -19,7 +19,7 @@
 #' x <- spltidy::generate_test_data()
 #' plot_epicurve(x[location_code == "county03"], type = "single", var_y = "deaths_n")
 #' epicurve(x, type = "stacked", fill_var = "location_code", var_y = "deaths_n")
-#' epicurve(x, type = "dodged", fill_var = "location_code", var_y = "deaths_n")
+#' plot_epicurve(x, type = "dodged", fill_var = "location_code", var_y = "deaths_n")
 #' @export
 plot_epicurve <- function(x,
                      type = "single",
@@ -37,6 +37,7 @@ plot_epicurve <- function(x,
                      lab_caption = fhi_caption(),
                      format_y = format_nor_num_0,
                      scale_y = "free",
+                     palette = "primary",
                      ...) {
   UseMethod("plot_epicurve", x)
 }
@@ -58,6 +59,7 @@ plot_epicurve <- function(x,
 #' @param lab_caption If not specified, splstyle::fhi_caption() is used as the lab_caption.
 #' @param format_y How the y-axis ticks should be formatted. For example splstyle::format_nor_num_0 or fhiplot::format_nor_perc_0
 #' @param scale_y How to scale the y-axis if the graph is split with facet_wrap. Free or fixed.
+#' @param palette what palette to use
 #' @examples
 #' x <- spltidy::generate_test_data()
 #' epicurve(x[location_code == "county03"], type = "single", var_y = "deaths_n")
@@ -80,6 +82,7 @@ plot_epicurve.default <- function(x,
                              lab_caption = fhi_caption(),
                              format_y = format_nor_num_0,
                              scale_y = "free",
+                             palette = "primary",
                              ...) {
 
   # lab_y = "Number of reported deaths"
@@ -107,14 +110,14 @@ plot_epicurve.default <- function(x,
   if(type == "stacked"){
     q <- ggplot(x, aes_string(x = var_x, y = var_y, fill = fill_var))
     q <- q + geom_col(width = 0.8)
-    q <- q + scale_fill_fhi(fill_lab, palette="primary")
+    q <- q + scale_fill_fhi(fill_lab, palette = palette)
   } else if(type == "single"){
     q <- ggplot(x, aes_string(x = var_x, y = var_y))
     q <- q + geom_col(fill = base_color, width = 0.8)
   } else if (type == "dodged") {
     q <- ggplot(x, aes_string(x = var_x, y = var_y, fill = fill_var))
     q <- q + geom_col(position = "dodge", width = 0.8)
-    q <- q + scale_fill_fhi(fill_lab, palette="primary")
+    q <- q + scale_fill_fhi(fill_lab, palette = palette)
 
 
   }
