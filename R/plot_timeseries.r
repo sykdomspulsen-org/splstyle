@@ -1,5 +1,5 @@
 
- # data <- test_data_time_series()
+#  # data <- test_data_time_series()
 #  plot_timeseries(data,
 #                   var_y = c("Covid cases" = "cases_n", "Covid deaths" ="deaths_n", "Covid tests" = "tests_n"),
 #                   breaks_x = every_nth(2),
@@ -45,6 +45,7 @@
 #' @param palette What palette to use for the lines. The default is "primary".
 #' @param palette_dir 1 or -1.
 #' @param scale_y How to scale the y-axis if the graph is split with facet_wrap. Free or fixed.
+#' @param base_size The base size of the plot.
 #' @export
 plot_timeseries <- function(data,
                             var_x = "isoyearweek",
@@ -62,7 +63,8 @@ plot_timeseries <- function(data,
                             facet_ncol = NULL,
                             palette = "primary",
                             palette_dir = 1,
-                            scale_y = "free"
+                            scale_y = "free",
+                            base_size = 12
                             ) {
 
 
@@ -97,7 +99,7 @@ plot_timeseries <- function(data,
   q <- q + expand_limits(y = 0)
   q <- q + fhiplot::scale_color_fhi(lab_legend, palette = palette, direction = palette_dir)
   # q <- q + guides(color = guide_legend(order = 1, reverse = F), color = guide_legend(order = 2))
-  q <- q + theme_fhi_lines_horizontal(legend_position = legend_position)
+  q <- q + theme_fhi_basic(legend_position = legend_position, base_size = base_size)
   # q <- q + fhiplot::theme_fhi_basic(base_size = 9, legend_position = "bottom")
   q <- q + labs(title = lab_main,
                 subtitle = lab_sub,

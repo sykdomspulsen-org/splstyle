@@ -21,7 +21,8 @@ plot_timeseries(
   facet_ncol = NULL,
   palette = "primary",
   palette_dir = 1,
-  scale_y = "free"
+  scale_y = "free",
+  base_size = 12
 )
 }
 \arguments{
@@ -58,6 +59,8 @@ plot_timeseries(
 \item{palette_dir}{1 or -1.}
 
 \item{scale_y}{How to scale the y-axis if the graph is split with facet_wrap. Free or fixed.}
+
+\item{base_size}{The base size of the plot.}
 }
 \description{
 plot_timeseries
