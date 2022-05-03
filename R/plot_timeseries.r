@@ -99,7 +99,8 @@ plot_timeseries <- function(data,
   q <- q + expand_limits(y = 0)
   q <- q + fhiplot::scale_color_fhi(lab_legend, palette = palette, direction = palette_dir)
   # q <- q + guides(color = guide_legend(order = 1, reverse = F), color = guide_legend(order = 2))
-  q <- q + theme_fhi_basic(legend_position = legend_position, base_size = base_size)
+  q <- q + theme_fhi_lines_horizontal(legend_position = legend_position, base_size = base_size)
+  # q <- q + theme_fhi_basic(legend_position = legend_position, base_size = base_size)
   # q <- q + fhiplot::theme_fhi_basic(base_size = 9, legend_position = "bottom")
   q <- q + labs(title = lab_main,
                 subtitle = lab_sub,
