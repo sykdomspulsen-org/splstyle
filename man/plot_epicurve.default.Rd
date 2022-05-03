@@ -21,6 +21,8 @@
   lab_caption = fhi_caption(),
   format_y = format_nor_num_0,
   scale_y = "free",
+  palette = "primary",
+  base_size = 12,
   ...
 )
 }
@@ -52,6 +54,10 @@
 \item{format_y}{How the y-axis ticks should be formatted. For example splstyle::format_nor_num_0 or fhiplot::format_nor_perc_0}
 
 \item{scale_y}{How to scale the y-axis if the graph is split with facet_wrap. Free or fixed.}
+
+\item{palette}{what palette to use}
+
+\item{base_size}{size of plot}
 }
 \description{
 Epicurve

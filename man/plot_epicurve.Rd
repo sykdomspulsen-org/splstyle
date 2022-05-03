@@ -21,6 +21,7 @@ plot_epicurve(
   lab_caption = fhi_caption(),
   format_y = format_nor_num_0,
   scale_y = "free",
+  palette = "primary",
   ...
 )
 }
@@ -58,7 +59,7 @@ Epicurve
 }
 \examples{
 x <- spltidy::generate_test_data()
-epicurve(x[location_code == "county03"], type = "single", var_y = "deaths_n")
+plot_epicurve(x[location_code == "county03"], type = "single", var_y = "deaths_n")
 epicurve(x, type = "stacked", fill_var = "location_code", var_y = "deaths_n")
-epicurve(x, type = "dodged", fill_var = "location_code", var_y = "deaths_n")
+plot_epicurve(x, type = "dodged", fill_var = "location_code", var_y = "deaths_n")
 }

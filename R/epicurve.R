@@ -60,6 +60,7 @@ plot_epicurve <- function(x,
 #' @param format_y How the y-axis ticks should be formatted. For example splstyle::format_nor_num_0 or fhiplot::format_nor_perc_0
 #' @param scale_y How to scale the y-axis if the graph is split with facet_wrap. Free or fixed.
 #' @param palette what palette to use
+#' @param base_size size of plot
 #' @examples
 #' x <- spltidy::generate_test_data()
 #' epicurve(x[location_code == "county03"], type = "single", var_y = "deaths_n")
@@ -83,6 +84,7 @@ plot_epicurve.default <- function(x,
                              format_y = format_nor_num_0,
                              scale_y = "free",
                              palette = "primary",
+                             base_size = 12,
                              ...) {
 
   # lab_y = "Number of reported deaths"
@@ -116,7 +118,8 @@ plot_epicurve.default <- function(x,
     q <- q + geom_col(fill = base_color, width = 0.8)
   } else if (type == "dodged") {
     q <- ggplot(x, aes_string(x = var_x, y = var_y, fill = fill_var))
-    q <- q + geom_col(position = "dodge", width = 0.8)
+    # q <- q + geom_col(position = "dodge", width = 0.8)
+    q <- q + geom_bar(position = "dodge", stat = "identity", width = 0.8)
     q <- q + scale_fill_fhi(fill_lab, palette = palette)
 
 
@@ -143,7 +146,7 @@ plot_epicurve.default <- function(x,
                 subtitle = lab_sub,
                 caption = lab_caption,
                 )
-  q <- q + theme_fhi_lines_horizontal()
+  q <- q + theme_fhi_lines_horizontal(legend_position = "bottom", base_size = base_size)
   q <- q + set_x_axis_vertical()
   q
 }
