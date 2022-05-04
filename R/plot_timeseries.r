@@ -64,21 +64,31 @@ plot_timeseries <- function(data,
                             palette = "primary",
                             palette_dir = 1,
                             scale_y = "free",
-                            base_size = 12
+                            base_size = 12,
+                            long_table = TRUE
                             ) {
 
 
 
-  d <- melt(data,
+  if(long_table){
+    d <- melt(data,
               id.vars = c(facet_wrap, var_x),
               measure.vars = list(n = var_y),
               value.name = "n"
-  )
+    )
 
-  d_name <- data.table(name_outcome= names(var_y), variable = var_y)
+    d_name <- data.table(name_outcome= names(var_y), variable = var_y)
 
-  # d <- cbind(d, d_name)
-  d <- d_name[d, on = 'variable']
+    d <- d_name[d, on = 'variable']
+  }
+  # d <- melt(data,
+  #             id.vars = c(facet_wrap, var_x),
+  #             measure.vars = list(n = var_y),
+  #             value.name = "n"
+  # )
+  #
+  # d_name <- data.table(name_outcome= names(var_y), variable = var_y)
+  # d <- d_name[d, on = 'variable']
 
 
   q <- ggplot(d, aes_string(x = var_x))

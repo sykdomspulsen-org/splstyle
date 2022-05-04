@@ -22,7 +22,8 @@ plot_timeseries(
   palette = "primary",
   palette_dir = 1,
   scale_y = "free",
-  base_size = 12
+  base_size = 12,
+  long_table = TRUE
 )
 }
 \arguments{

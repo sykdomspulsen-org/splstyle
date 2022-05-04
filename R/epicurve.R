@@ -38,6 +38,7 @@ plot_epicurve <- function(x,
                      format_y = format_nor_num_0,
                      scale_y = "free",
                      palette = "primary",
+                     base_size = 12,
                      ...) {
   UseMethod("plot_epicurve", x)
 }
