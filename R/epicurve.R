@@ -104,11 +104,6 @@ plot_epicurve.default <- function(x,
 
   # dots <- list(...)
 
-  # if(fill_var == "location_code"){
-  #   x[, location_name := location_code_to_character(location_code)]
-  # }
-
-
   if(type == "stacked"){
     q <- ggplot(x, aes_string(x = var_x, y = var_y, fill = fill_var))
     q <- q + geom_col(width = 0.8)
@@ -118,8 +113,8 @@ plot_epicurve.default <- function(x,
     q <- q + geom_col(fill = base_color, width = 0.8)
   } else if (type == "dodged") {
     q <- ggplot(x, aes_string(x = var_x, y = var_y, fill = fill_var))
-    # q <- q + geom_col(position = "dodge", width = 0.8)
-    q <- q + geom_bar(position = "dodge", stat = "identity", width = 0.8)
+    q <- q + geom_col(position = "dodge", width = 0.8)
+    # q <- q + geom_bar(position = "dodge", stat = "identity", width = 0.8)
     q <- q + scale_fill_fhi(fill_lab, palette = palette)
 
 
@@ -141,7 +136,6 @@ plot_epicurve.default <- function(x,
                               breaks = pretty_breaks(5),
                               labels = format_y
   )
-  # q <- q + labs(caption = fhi_caption())
   q <- q + labs(title = lab_main,
                 subtitle = lab_sub,
                 caption = lab_caption,
