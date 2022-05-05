@@ -65,12 +65,12 @@ plot_timeseries <- function(data,
                             palette_dir = 1,
                             scale_y = "free",
                             base_size = 12,
-                            long_table = TRUE
+                            wide_table = TRUE
                             ) {
 
 
 
-  if(long_table){
+  if(wide_table){
     d <- melt(data,
               id.vars = c(facet_wrap, var_x),
               measure.vars = list(n = var_y),
