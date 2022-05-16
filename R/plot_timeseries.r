@@ -51,6 +51,7 @@ plot_timeseries <- function(data,
                             var_x = "isoyearweek",
                             var_y,
                             breaks_x = NULL,
+                            breaks_y = NULL,
                             lab_main = NULL,
                             lab_sub = NULL,
                             lab_caption = fhi_caption(),
@@ -58,6 +59,7 @@ plot_timeseries <- function(data,
                             lab_x = NULL,
                             lab_legend = NULL,
                             legend_position = "bottom",
+                            legend_direction = "horizontal",
                             format_y = format_nor_num_0,
                             facet_wrap = NULL,
                             facet_ncol = NULL,
@@ -92,10 +94,10 @@ plot_timeseries <- function(data,
 
 
   q <- ggplot(d, aes_string(x = var_x))
-  q <- q + geom_path(aes(y = n, color = name_outcome, group = name_outcome), size = 1.5)
+  q <- q + geom_path(aes(y = n, color = name_outcome, group = name_outcome), lwd = 1)
   q <- q + scale_x_discrete(name = lab_x, breaks = breaks_x)
   q <- q + scale_y_continuous(name = lab_y,
-                              breaks = fhiplot::pretty_breaks(10),
+                              breaks = breaks_y,
                               expand = expand_scale(mult = c(0, 0.1)),
                               labels = format_y
                               )
@@ -110,6 +112,7 @@ plot_timeseries <- function(data,
   q <- q + fhiplot::scale_color_fhi(lab_legend, palette = palette, direction = palette_dir)
   # q <- q + guides(color = guide_legend(order = 1, reverse = F), color = guide_legend(order = 2))
   q <- q + theme_fhi_lines_horizontal(legend_position = legend_position, base_size = base_size)
+  q <- q + theme(legend.direction = legend_direction)
   # q <- q + theme_fhi_basic(legend_position = legend_position, base_size = base_size)
   # q <- q + fhiplot::theme_fhi_basic(base_size = 9, legend_position = "bottom")
   q <- q + labs(title = lab_main,
