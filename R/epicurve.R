@@ -13,12 +13,12 @@
 #' @param lab_main The main title of the graph
 #' @param lab_sub The subtitle of the graph
 #' @param lab_caption If not specified, splstyle::fhi_caption() is used as the lab_caption.
-#' @param format_y How the y-axis ticks should be formatted. For example splstyle::format_nor_num_0 or fhiplot::format_nor_perc_0
+#' @param format_y How the y-axis ticks should be formatted. For example splstyle::format_nor_num_0 or splstyle::format_nor_perc_0
 #' @param scale_y How to scale the y-axis if the graph is split with facet_wrap. Free or fixed.
 #' @examples
 #' x <- spltidy::generate_test_data()
 #' plot_epicurve(x[location_code == "county03"], type = "single", var_y = "deaths_n")
-#' epicurve(x, type = "stacked", fill_var = "location_code", var_y = "deaths_n")
+#' plot_epicurve(x, type = "stacked", fill_var = "location_code", var_y = "deaths_n")
 #' plot_epicurve(x, type = "dodged", fill_var = "location_code", var_y = "deaths_n")
 #' @export
 plot_epicurve <- function(x,
@@ -58,15 +58,15 @@ plot_epicurve <- function(x,
 #' @param lab_main The main title of the graph
 #' @param lab_sub The subtitle of the graph
 #' @param lab_caption If not specified, splstyle::fhi_caption() is used as the lab_caption.
-#' @param format_y How the y-axis ticks should be formatted. For example splstyle::format_nor_num_0 or fhiplot::format_nor_perc_0
+#' @param format_y How the y-axis ticks should be formatted. For example splstyle::format_nor_num_0 or splstyle::format_nor_perc_0
 #' @param scale_y How to scale the y-axis if the graph is split with facet_wrap. Free or fixed.
 #' @param palette what palette to use
 #' @param base_size size of plot
 #' @examples
 #' x <- spltidy::generate_test_data()
-#' epicurve(x[location_code == "county03"], type = "single", var_y = "deaths_n")
-#' epicurve(x, type = "stacked", fill_var = "location_code", var_y = "deaths_n")
-#' epicurve(x, type = "dodged", fill_var = "location_code", var_y = "deaths_n")
+#' plot_epicurve(x[location_code == "county03"], type = "single", var_y = "deaths_n")
+#' plot_epicurve(x, type = "stacked", fill_var = "location_code", var_y = "deaths_n")
+#' plot_epicurve(x, type = "dodged", fill_var = "location_code", var_y = "deaths_n")
 #' @export
 plot_epicurve.default <- function(x,
                              type = "single",
