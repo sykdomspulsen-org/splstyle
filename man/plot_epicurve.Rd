@@ -31,6 +31,10 @@ plot_epicurve(
 
 \item{type}{"single", "stacked" or "dodged"}
 
+\item{fill_var}{XX}
+
+\item{fill_lab}{XX}
+
 \item{facet_wrap}{What column in the dataset to use to split the dataset.}
 
 \item{facet_ncol}{How many columns with graphs}

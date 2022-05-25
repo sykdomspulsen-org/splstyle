@@ -20,13 +20,10 @@ Imports: data.table,
     htmlTable,
     magrittr,
     openxlsx,
-    purrr,
     rstudioapi,
     stringi,
     stringr, 
     scales,
-    spltime,
-    spltidy,
     fhiplot
 Suggests: testthat,
     knitr,
@@ -36,6 +33,8 @@ Suggests: testthat,
     lemon,
     fhi,
     fhidata,
-    fhimaps
+    fhimaps,
+    spltime,
+    spltidy
 RoxygenNote: 7.1.2
 VignetteBuilder: knitr

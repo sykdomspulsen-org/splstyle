@@ -37,6 +37,8 @@ plot_timeseries(
 
 \item{breaks_x}{Use splstyle::every_nth() to choose how many ticks to show on the x-axis}
 
+\item{breaks_y}{X}
+
 \item{lab_main}{The main title of the graph}
 
 \item{lab_sub}{The subtitle of the graph}
@@ -51,6 +53,8 @@ plot_timeseries(
 
 \item{legend_position}{The position the legend should have. If not specified, "bottom" is used.}
 
+\item{legend_direction}{X}
+
 \item{format_y}{How the y-axis ticks should be formatted. For example splstyle::format_nor_num_0 or fhiplot::format_nor_perc_0}
 
 \item{facet_wrap}{What column in the dataset to use to split the dataset.}
@@ -64,6 +68,8 @@ plot_timeseries(
 \item{scale_y}{How to scale the y-axis if the graph is split with facet_wrap. Free or fixed.}
 
 \item{base_size}{The base size of the plot.}
+
+\item{wide_table}{X}
 }
 \description{
 plot_timeseries

@@ -32,6 +32,7 @@
 #' @param var_x "date" or "isoyearweek"
 #' @param var_y The name of the variable to use on the y-axis of the graph
 #' @param breaks_x Use splstyle::every_nth() to choose how many ticks to show on the x-axis
+#' @param breaks_y X
 #' @param lab_main The main title of the graph
 #' @param lab_sub The subtitle of the graph
 #' @param lab_caption If not specified, splstyle::fhi_caption() is used as the lab_caption.
@@ -39,6 +40,7 @@
 #' @param lab_y The label of the y-axis
 #' @param lab_legend The label of the legend.
 #' @param legend_position The position the legend should have. If not specified, "bottom" is used.
+#' @param legend_direction X
 #' @param format_y How the y-axis ticks should be formatted. For example splstyle::format_nor_num_0 or fhiplot::format_nor_perc_0
 #' @param facet_wrap What column in the dataset to use to split the dataset.
 #' @param facet_ncol How many columns with graphs if facet_wrap is used.
@@ -46,6 +48,7 @@
 #' @param palette_dir 1 or -1.
 #' @param scale_y How to scale the y-axis if the graph is split with facet_wrap. Free or fixed.
 #' @param base_size The base size of the plot.
+#' @param wide_table X
 #' @export
 plot_timeseries <- function(data,
                             var_x = "isoyearweek",

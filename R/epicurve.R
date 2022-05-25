@@ -1,8 +1,8 @@
 #' Epicurve
 #' @param x Dataset
 #' @param type "single", "stacked" or "dodged"
-#' @param fill_var
-#' @param fill_lab
+#' @param fill_var XX
+#' @param fill_lab XX
 #' @param facet_wrap What column in the dataset to use to split the dataset.
 #' @param facet_ncol How many columns with graphs
 #' @param var_x "date" or "isoyearweek"
@@ -46,8 +46,8 @@ plot_epicurve <- function(x,
 #' Epicurve
 #' @param x Dataset
 #' @param type "single", "stacked" or "dodged"
-#' @param fill_var
-#' @param fill_lab
+#' @param fill_var XX
+#' @param fill_lab XX
 #' @param facet_wrap What column in the dataset to use to split the dataset.
 #' @param facet_ncol How many columns with graphs
 #' @param var_x "date" or "isoyearweek"
