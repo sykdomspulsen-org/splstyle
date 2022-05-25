@@ -15,6 +15,8 @@
 #' @param lab_caption If not specified, splstyle::fhi_caption() is used as the lab_caption.
 #' @param format_y How the y-axis ticks should be formatted. For example splstyle::format_nor_num_0 or splstyle::format_nor_perc_0
 #' @param scale_y How to scale the y-axis if the graph is split with facet_wrap. Free or fixed.
+#' @param base_size X
+#' @param ... X
 #' @examples
 #' x <- spltidy::generate_test_data()
 #' plot_epicurve(x[location_code == "county03"], type = "single", var_y = "deaths_n")
@@ -62,6 +64,7 @@ plot_epicurve <- function(x,
 #' @param scale_y How to scale the y-axis if the graph is split with facet_wrap. Free or fixed.
 #' @param palette what palette to use
 #' @param base_size size of plot
+#' @param ... X
 #' @examples
 #' x <- spltidy::generate_test_data()
 #' plot_epicurve(x[location_code == "county03"], type = "single", var_y = "deaths_n")

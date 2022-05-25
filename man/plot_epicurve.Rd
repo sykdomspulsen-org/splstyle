@@ -58,6 +58,10 @@ plot_epicurve(
 \item{format_y}{How the y-axis ticks should be formatted. For example splstyle::format_nor_num_0 or splstyle::format_nor_perc_0}
 
 \item{scale_y}{How to scale the y-axis if the graph is split with facet_wrap. Free or fixed.}
+
+\item{base_size}{X}
+
+\item{...}{X}
 }
 \description{
 Epicurve

@@ -62,6 +62,8 @@
 \item{palette}{what palette to use}
 
 \item{base_size}{size of plot}
+
+\item{...}{X}
 }
 \description{
 Epicurve
