@@ -34,7 +34,6 @@ Suggests: testthat,
     fhi,
     fhidata,
     fhimaps,
-    spltime,
-    spltidy
+    spltime
 RoxygenNote: 7.1.2
 VignetteBuilder: knitr

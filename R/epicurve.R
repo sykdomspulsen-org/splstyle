@@ -28,10 +28,9 @@ plot_epicurve <- function(x,
 #' @param base_size size of plot
 #' @param ... X
 #' @examples
-#' x <- spltidy::generate_test_data()
-#' plot_epicurve(x[location_code == "county03"], type = "single", var_y = "deaths_n")
-#' plot_epicurve(x, type = "stacked", fill_var = "location_code", var_y = "deaths_n")
-#' plot_epicurve(x, type = "dodged", fill_var = "location_code", var_y = "deaths_n")
+#' plot_epicurve(norway_covid19_cases_by_time_location[location_code == "county03"], type = "single", var_y = "covid19_cases_testdate_n")
+#' plot_epicurve(norway_covid19_cases_by_time_location[granularity_geo == "county"], type = "stacked", fill_var = "location_code", var_y = "covid19_cases_testdate_n")
+#' plot_epicurve(norway_covid19_cases_by_time_location[granularity_geo == "county"], type = "dodged", fill_var = "location_code", var_y = "covid19_cases_testdate_n")
 #' @export
 plot_epicurve.default <- function(x,
                              type = "single",
