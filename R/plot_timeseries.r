@@ -28,6 +28,15 @@
 # )
 
 #' plot_timeseries
+#' @param x Dataset
+#' @param ... X
+#' @export
+plot_timeseries <- function(x,
+                          ...) {
+  UseMethod("plot_timeseries", x)
+}
+
+#' plot_timeseries
 #' @param data Dataset
 #' @param var_x "date" or "isoyearweek"
 #' @param var_y The name of the variable to use on the y-axis of the graph
@@ -50,7 +59,7 @@
 #' @param base_size The base size of the plot.
 #' @param wide_table X
 #' @export
-plot_timeseries <- function(data,
+plot_timeseries.default <- function(data,
                             var_x = "isoyearweek",
                             var_y,
                             breaks_x = NULL,
