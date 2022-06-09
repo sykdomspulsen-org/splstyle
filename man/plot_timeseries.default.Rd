@@ -37,7 +37,7 @@
 
 \item{breaks_x}{Use splstyle::every_nth() to choose how many ticks to show on the x-axis}
 
-\item{breaks_y}{X}
+\item{breaks_y}{Use splstyle::pretty_breaks() to add ticks on the y-axis}
 
 \item{lab_main}{The main title of the graph}
 
@@ -53,7 +53,7 @@
 
 \item{legend_position}{The position the legend should have. If not specified, "bottom" is used.}
 
-\item{legend_direction}{X}
+\item{legend_direction}{layout of items in legend ("horizontal" or "vertical")}
 
 \item{format_y}{How the y-axis ticks should be formatted. For example splstyle::format_nor_num_0 or fhiplot::format_nor_perc_0}
 
