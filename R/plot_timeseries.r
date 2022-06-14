@@ -28,7 +28,7 @@ plot_timeseries <- function(x,
 #' @param palette_dir 1 or -1.
 #' @param scale_y How to scale the y-axis if the graph is split with facet_wrap. Free or fixed.
 #' @param base_size The base size of the plot.
-#' @param wide_table X
+#' @param wide_table TRUE if the data.table is wide and FALSE if the data.table is long.
 #' @examples
 #' plot_timeseries(norway_covid19_cases_by_time_location[granularity_geo == "nation" & granularity_time == "isoweek"], var_y = c("Covid cases" = "covid19_cases_testdate_n"), breaks_x = every_nth(8), breaks_y = splstyle::pretty_breaks(5))
 #' plot_timeseries(norway_covid19_cases_by_time_location[granularity_geo == "county" & granularity_time == "isoweek"], var_y = c("Covid cases" = "covid19_cases_testdate_n"), breaks_x = every_nth(8), breaks_y = splstyle::pretty_breaks(5), facet_wrap = "location_code")
