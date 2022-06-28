@@ -69,15 +69,6 @@ plot_timeseries.default <- function(data,
 
     d <- d_name[d, on = 'variable']
   }
-  # d <- melt(data,
-  #             id.vars = c(facet_wrap, var_x),
-  #             measure.vars = list(n = var_y),
-  #             value.name = "n"
-  # )
-  #
-  # d_name <- data.table(name_outcome= names(var_y), variable = var_y)
-  # d <- d_name[d, on = 'variable']
-
 
   q <- ggplot(d, aes_string(x = var_x))
   q <- q + geom_path(aes(y = n, color = name_outcome, group = name_outcome), lwd = 1)

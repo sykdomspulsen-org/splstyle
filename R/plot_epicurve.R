@@ -26,7 +26,7 @@ plot_epicurve <- function(x,
 #' @param scale_y How to scale the y-axis if the graph is split with facet_wrap. Free or fixed.
 #' @param palette what palette to use
 #' @param base_size size of plot
-#' @param ... X
+#' @param ... Not currently used.
 #' @examples
 #' plot_epicurve(norway_covid19_cases_by_time_location[location_code == "county03"], type = "single", var_y = "covid19_cases_testdate_n")
 #' plot_epicurve(norway_covid19_cases_by_time_location[granularity_geo == "county"], type = "stacked", fill_var = "location_code", var_y = "covid19_cases_testdate_n")
