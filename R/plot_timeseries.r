@@ -1,38 +1,18 @@
-
-#  # data <- test_data_time_series()
-#  plot_timeseries(data,
-#                   var_y = c("Covid cases" = "cases_n", "Covid deaths" ="deaths_n", "Covid tests" = "tests_n"),
-#                   breaks_x = every_nth(2),
-#                   lab_main = "Norge",
-#                   lab_sub = "Antall tilfeller og dødsfall",
-#                  lab_y = "Antall",
-#                  lab_x = "Uker",
-#                  lab_legend = "Legend",
-#                  palette = "warning",
-#                  palette_dir = -1
-#
-# )
-
-
-#  plot_timeseries(data,
-#                   var_y = c("Covid cases" = "cases_n", "Covid deaths" ="deaths_n"),
-#                   breaks_x = every_nth(2),
-#                   lab_main = "Norge",
-#                   lab_sub = "Antall tilfeller og dødsfall",
-#                  lab_y = "Antall",
-#                  lab_x = "Uker",
-#                  lab_legend = "Legend",
-#                  facet_wrap = "location_code",
-#                  facet_ncol = 4
-#
-# )
+#' plot_timeseries
+#' @param x Dataset
+#' @param ... X
+#' @export
+plot_timeseries <- function(x,
+                          ...) {
+  UseMethod("plot_timeseries", x)
+}
 
 #' plot_timeseries
 #' @param data Dataset
 #' @param var_x "date" or "isoyearweek"
 #' @param var_y The name of the variable to use on the y-axis of the graph
 #' @param breaks_x Use splstyle::every_nth() to choose how many ticks to show on the x-axis
-#' @param breaks_y X
+#' @param breaks_y Use splstyle::pretty_breaks() to add ticks on the y-axis
 #' @param lab_main The main title of the graph
 #' @param lab_sub The subtitle of the graph
 #' @param lab_caption If not specified, splstyle::fhi_caption() is used as the lab_caption.
@@ -40,7 +20,7 @@
 #' @param lab_y The label of the y-axis
 #' @param lab_legend The label of the legend.
 #' @param legend_position The position the legend should have. If not specified, "bottom" is used.
-#' @param legend_direction X
+#' @param legend_direction layout of items in legend ("horizontal" or "vertical")
 #' @param format_y How the y-axis ticks should be formatted. For example splstyle::format_nor_num_0 or fhiplot::format_nor_perc_0
 #' @param facet_wrap What column in the dataset to use to split the dataset.
 #' @param facet_ncol How many columns with graphs if facet_wrap is used.
@@ -48,9 +28,12 @@
 #' @param palette_dir 1 or -1.
 #' @param scale_y How to scale the y-axis if the graph is split with facet_wrap. Free or fixed.
 #' @param base_size The base size of the plot.
-#' @param wide_table X
+#' @param wide_table TRUE if the data.table is wide and FALSE if the data.table is long.
+#' @examples
+#' plot_timeseries(norway_covid19_cases_by_time_location[granularity_geo == "nation" & granularity_time == "isoweek"], var_y = c("Covid cases" = "covid19_cases_testdate_n"), breaks_x = every_nth(8), breaks_y = splstyle::pretty_breaks(5))
+#' plot_timeseries(norway_covid19_cases_by_time_location[granularity_geo == "county" & granularity_time == "isoweek"], var_y = c("Covid cases" = "covid19_cases_testdate_n"), breaks_x = every_nth(8), breaks_y = splstyle::pretty_breaks(5), facet_wrap = "location_code")
 #' @export
-plot_timeseries <- function(data,
+plot_timeseries.default <- function(data,
                             var_x = "isoyearweek",
                             var_y,
                             breaks_x = NULL,
@@ -86,15 +69,6 @@ plot_timeseries <- function(data,
 
     d <- d_name[d, on = 'variable']
   }
-  # d <- melt(data,
-  #             id.vars = c(facet_wrap, var_x),
-  #             measure.vars = list(n = var_y),
-  #             value.name = "n"
-  # )
-  #
-  # d_name <- data.table(name_outcome= names(var_y), variable = var_y)
-  # d <- d_name[d, on = 'variable']
-
 
   q <- ggplot(d, aes_string(x = var_x))
   q <- q + geom_path(aes(y = n, color = name_outcome, group = name_outcome), lwd = 1)
@@ -125,93 +99,4 @@ plot_timeseries <- function(data,
   q <- q + fhiplot::set_x_axis_vertical()
   q
 
-}
-
-
-
-test_data_time_series <- function(var_x = "isoyearweek") {
-  set.seed(4)
-  dates <- sample(seq.Date(as.Date("2018-01-01"),
-                           as.Date("2018-07-08"), 1),
-                  20000,
-                  replace = T)
-  d <- expand.grid(
-    location_code = "norge",
-    # location_code = unique(fhidata::norway_locations_b2020$county_code),
-    date = dates
-  )
-  # Convert to data.table
-  setDT(d)
-
-  # print
-  # print(d)
-
-  # Convert to data.table
-  setDT(d)
-
-  # aggregate
-  d <- d[,
-         .(
-           cases_n = .N
-         ),
-         keyby = .(
-           location_code,
-           date
-         )
-  ]
-
-  d[, deaths_n := cases_n]
-  d[, tests_n := cases_n]
-  # aggregated daily dataset that does not contain days with 0 cases
-  # print(d)
-
-  # create skeleton
-  skeleton <- data.table(expand.grid(
-    location_code = "norge",
-    # location_code = unique(fhidata::norway_locations_b2020$county_code),
-    date = seq.Date(min(d$date), max(d$date), 1)
-  ))
-
-  # merge the two datasets together
-  d <- merge(d, skeleton, by=c("location_code", "date"), all=T)
-
-  # Fill in 'missing' Ns with 0
-  d[is.na(cases_n), cases_n := 0]
-
-  # Now you have a clean aggregated daily dataset that contains days with 0 cases!
-  # print(d)
-
-  # d <- d[location_code %in% c(
-  #   "county03",
-  #   "county11",
-  #   "county15"
-  #   # "county30",
-  #   # "county34"
-  # )]
-
-  if(!is.null(var_x)){
-    # create 3 new variables:
-    d[, isoyearweek := fhi::isoyearweek(date)]
-
-    # aggregate down to weekly level
-    w <- d[,
-           .(
-             cases_n = sum(cases_n),
-             deaths_n = sum(deaths_n),
-             tests_n = sum(tests_n)
-           ),
-           keyby = .(
-             location_code,
-             isoyearweek
-           )
-    ]
-
-    w[, deaths_n := deaths_n - 100]
-    w[, tests_n := tests_n - 200]
-    w[, cases_n := as.numeric(cases_n)]
-    print(w)
-    return(w)
-  }
-
-  return(d)
 }

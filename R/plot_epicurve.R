@@ -10,8 +10,8 @@ plot_epicurve <- function(x,
 #' Epicurve
 #' @param x Dataset
 #' @param type "single", "stacked" or "dodged"
-#' @param fill_var XX
-#' @param fill_lab XX
+#' @param fill_var variable to fill by.
+#' @param fill_lab fill label
 #' @param facet_wrap What column in the dataset to use to split the dataset.
 #' @param facet_ncol How many columns with graphs
 #' @param var_x "date" or "isoyearweek"
@@ -26,11 +26,11 @@ plot_epicurve <- function(x,
 #' @param scale_y How to scale the y-axis if the graph is split with facet_wrap. Free or fixed.
 #' @param palette what palette to use
 #' @param base_size size of plot
-#' @param ... X
+#' @param ... Not currently used.
 #' @examples
 #' plot_epicurve(norway_covid19_cases_by_time_location[location_code == "county03"], type = "single", var_y = "covid19_cases_testdate_n")
 #' plot_epicurve(norway_covid19_cases_by_time_location[granularity_geo == "county"], type = "stacked", fill_var = "location_code", var_y = "covid19_cases_testdate_n")
-#' plot_epicurve(norway_covid19_cases_by_time_location[granularity_geo == "county"], type = "dodged", fill_var = "location_code", var_y = "covid19_cases_testdate_n")
+#' plot_epicurve(norway_covid19_cases_by_time_location[granularity_geo == "county" & location_code %in% c("county34", "county38", "county11")], type = "dodged", fill_var = "location_code", var_y = "covid19_cases_testdate_n")
 #' @export
 plot_epicurve.default <- function(x,
                              type = "single",
