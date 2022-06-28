@@ -31,9 +31,9 @@
 
 \item{type}{"single", "stacked" or "dodged"}
 
-\item{fill_var}{XX}
+\item{fill_var}{variable to fill by.}
 
-\item{fill_lab}{XX}
+\item{fill_lab}{fill label}
 
 \item{facet_wrap}{What column in the dataset to use to split the dataset.}
 
@@ -63,7 +63,7 @@
 
 \item{base_size}{size of plot}
 
-\item{...}{X}
+\item{...}{Not currently used.}
 }
 \description{
 Epicurve
@@ -71,5 +71,5 @@ Epicurve
 \examples{
 plot_epicurve(norway_covid19_cases_by_time_location[location_code == "county03"], type = "single", var_y = "covid19_cases_testdate_n")
 plot_epicurve(norway_covid19_cases_by_time_location[granularity_geo == "county"], type = "stacked", fill_var = "location_code", var_y = "covid19_cases_testdate_n")
-plot_epicurve(norway_covid19_cases_by_time_location[granularity_geo == "county"], type = "dodged", fill_var = "location_code", var_y = "covid19_cases_testdate_n")
+plot_epicurve(norway_covid19_cases_by_time_location[granularity_geo == "county" & location_code \%in\% c("county34", "county38", "county11")], type = "dodged", fill_var = "location_code", var_y = "covid19_cases_testdate_n")
 }

@@ -69,7 +69,7 @@
 
 \item{base_size}{The base size of the plot.}
 
-\item{wide_table}{X}
+\item{wide_table}{TRUE if the data.table is wide and FALSE if the data.table is long.}
 }
 \description{
 plot_timeseries
