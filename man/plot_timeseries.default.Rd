@@ -5,7 +5,7 @@
 \title{plot_timeseries}
 \usage{
 \method{plot_timeseries}{default}(
-  data,
+  x,
   var_x = "isoyearweek",
   var_y,
   breaks_x = NULL,
@@ -25,11 +25,12 @@
   palette_dir = 1,
   scale_y = "free",
   base_size = 12,
-  wide_table = TRUE
+  wide_table = TRUE,
+  ...
 )
 }
 \arguments{
-\item{data}{Dataset}
+\item{x}{Dataset}
 
 \item{var_x}{"date" or "isoyearweek"}
 
@@ -70,6 +71,8 @@
 \item{base_size}{The base size of the plot.}
 
 \item{wide_table}{TRUE if the data.table is wide and FALSE if the data.table is long.}
+
+\item{...}{Not currently used.}
 }
 \description{
 plot_timeseries
