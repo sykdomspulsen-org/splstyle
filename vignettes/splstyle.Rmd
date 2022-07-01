@@ -37,7 +37,8 @@ If multiple geographical areas:
 ```{r}
 library(ggplot2)
 library(data.table)
-library(splstyle)
+# library(splstyle)
+devtools::load_all(".")
 ```
 
 ## Data
@@ -105,7 +106,7 @@ plot_epicurve(d_week[granularity_geo == "county"],
               type = "single",
               var_y = "covid19_cases_testdate_n",
               lab_main = "Weekly epicurve for all the counties",
-              # facet_wrap = "location_code",
+              facet_wrap = "location_code",
               facet_ncol = 3,
               lab_y = "Cases")
 ```
