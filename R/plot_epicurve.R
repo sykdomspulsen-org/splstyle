@@ -33,7 +33,7 @@ plot_epicurve <- function(x,
 #' plot_epicurve(norway_covid19_cases_by_time_location[granularity_geo == "county"], type = "stacked", fill_var = "location_code", var_y = "covid19_cases_testdate_n")
 #' plot_epicurve(norway_covid19_cases_by_time_location[granularity_geo == "county" & location_code %in% c("county34", "county38", "county11")], type = "dodged", fill_var = "location_code", var_y = "covid19_cases_testdate_n")
 #' @export
-plot_epicurve.default <- function(data,
+plot_epicurve.default <- function(x,
                              type = "single",
                              fill_var = NULL,
                              fill_lab = NULL,
@@ -65,14 +65,14 @@ plot_epicurve.default <- function(data,
   # dots <- list(...)
 
   if(type == "stacked"){
-    q <- ggplot(data, aes_string(x = var_x, y = var_y, fill = fill_var))
+    q <- ggplot(x, aes_string(x = var_x, y = var_y, fill = fill_var))
     q <- q + geom_col(width = 0.8)
     q <- q + scale_fill_fhi(fill_lab, palette = palette)
   } else if(type == "single"){
-    q <- ggplot(data, aes_string(x = var_x, y = var_y))
+    q <- ggplot(x, aes_string(x = var_x, y = var_y))
     q <- q + geom_col(fill = base_color, width = 0.8)
   } else if (type == "dodged") {
-    q <- ggplot(data, aes_string(x = var_x, y = var_y, fill = fill_var))
+    q <- ggplot(x, aes_string(x = var_x, y = var_y, fill = fill_var))
     q <- q + geom_col(position = "dodge", width = 0.8)
     # q <- q + geom_bar(position = "dodge", stat = "identity", width = 0.8)
     q <- q + scale_fill_fhi(fill_lab, palette = palette)
