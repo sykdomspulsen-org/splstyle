@@ -61,7 +61,7 @@ plot_timeseries.default <- function(x,
 
 
   if(wide_table){
-    d <- melt(data,
+    d <- melt(x,
               id.vars = c(facet_wrap, var_x),
               measure.vars = list(n = var_y),
               value.name = "n"
