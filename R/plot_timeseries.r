@@ -8,7 +8,7 @@ plot_timeseries <- function(x,
 }
 
 #' plot_timeseries
-#' @param data Dataset
+#' @param x Dataset
 #' @param var_x "date" or "isoyearweek"
 #' @param var_y The name of the variable to use on the y-axis of the graph
 #' @param breaks_x Use splstyle::every_nth() to choose how many ticks to show on the x-axis
@@ -29,11 +29,12 @@ plot_timeseries <- function(x,
 #' @param scale_y How to scale the y-axis if the graph is split with facet_wrap. Free or fixed.
 #' @param base_size The base size of the plot.
 #' @param wide_table TRUE if the data.table is wide and FALSE if the data.table is long.
+#' @param ... Not currently used.
 #' @examples
 #' plot_timeseries(norway_covid19_cases_by_time_location[granularity_geo == "nation" & granularity_time == "isoweek"], var_y = c("Covid cases" = "covid19_cases_testdate_n"), breaks_x = every_nth(8), breaks_y = splstyle::pretty_breaks(5))
 #' plot_timeseries(norway_covid19_cases_by_time_location[granularity_geo == "county" & granularity_time == "isoweek"], var_y = c("Covid cases" = "covid19_cases_testdate_n"), breaks_x = every_nth(8), breaks_y = splstyle::pretty_breaks(5), facet_wrap = "location_code")
 #' @export
-plot_timeseries.default <- function(data,
+plot_timeseries.default <- function(x,
                             var_x = "isoyearweek",
                             var_y,
                             breaks_x = NULL,
@@ -53,13 +54,14 @@ plot_timeseries.default <- function(data,
                             palette_dir = 1,
                             scale_y = "free",
                             base_size = 12,
-                            wide_table = TRUE
+                            wide_table = TRUE,
+                            ...
                             ) {
 
 
 
   if(wide_table){
-    d <- melt(data,
+    d <- melt(x,
               id.vars = c(facet_wrap, var_x),
               measure.vars = list(n = var_y),
               value.name = "n"
