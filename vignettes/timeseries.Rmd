@@ -1,5 +1,5 @@
 ---
-title: "Epicurves"
+title: "Timeseries"
 author: "Celine Victoria Berg-Hansen"
 date: "`r Sys.Date()`"
 output:
@@ -7,7 +7,7 @@ output:
     fig_width: 6
     fig_height: 6
 vignette: >
-  %\VignetteIndexEntry{Epicurves}
+  %\VignetteIndexEntry{Timeseries}
   %\VignetteEncoding{UTF-8}
   %\VignetteEngine{knitr::rmarkdown}
 editor_options: 
@@ -99,7 +99,9 @@ plot_epicurve(d_week[granularity_geo == "county"],
 
 ## Stacked epicurves
 
-If you would like to add colours to differentiate between different variables. This can be done through `type = "stacked"` and the argument `fill_var`
+Sometimes 
+
+Sometimes you would like to add colours to differentiate between different variables. This can be done through `type = stacked` and the argument `fill_var`
 
 ```{r}
 
@@ -108,21 +110,6 @@ plot_epicurve(d_week[granularity_geo == "county"],
               fill_var = "location_code",
               var_y = "covid19_cases_testdate_n",
               lab_main = "Weekly epicurve for all the counties",
-              lab_y = "Cases")
-
-
-```
-
-## Dodged epicurves
-
-If you would like to compare different variables. This can be done with the argument `type = "dodged"` and specifying what you want to compare with the argument `fill_var`.
-
-```{r}
-
-plot_epicurve(d_week[granularity_geo == "county" & location_code %in% c("county46", "county03", "county30")],
-              type = "dodged",
-              fill_var = "location_code",
-              var_y = "covid19_cases_testdate_n",
               lab_y = "Cases")
 
 

@@ -8,7 +8,7 @@ plot_epicurve <- function(x,
 }
 
 #' Epicurve
-#' @param data Dataset
+#' @param x Dataset
 #' @param type "single", "stacked" or "dodged"
 #' @param fill_var variable to fill by.
 #' @param fill_lab fill label
