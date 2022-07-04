@@ -1,6 +1,6 @@
 ---
 title: "Epicurves"
-author: "Richard"
+author: "Celine Victoria Berg-Hansen"
 date: "`r Sys.Date()`"
 output:
   rmarkdown::html_vignette:
@@ -33,253 +33,82 @@ library(splstyle)
 We generally start with a linelist dataset (make sure it is a `data.table`!).
 
 ```{r}
-set.seed(4)
-dates <- sample(seq.Date(as.Date("2018-01-01"), 
-                         as.Date("2018-02-08"), 1),
-                20000, 
-                replace = T)
-d <- expand.grid(
-  location_code=unique(fhidata::norway_locations_b2020$county_code),
-  date = dates
-)
-# Convert to data.table
-setDT(d)
+d <- norway_covid19_cases_by_time_location
 
-# print
-print(d)
-```
+# There is a lot of data in this dataset, so we'll just use 2022 data here
+d <- d[isoyear == 2022]
 
-We now:
+# We have one daily dataset
+d_day <- d[granularity_time == "day"]
 
-1. Convert this into a `data.table` (in case it isn't already)
-2. Aggregate it to daily data (this dataset doesn't contain any days with 0 cases)
-3. Create a 'skeleton' dataset that contains all days from the first to last day
-4. Merge the two datasets together (so you now have a dataset that contains days with 0 cases)
-5. Fill in 'missing' N's with 0 (they are the dates that came from the skeleton dataset)
-
-```{r}
-# Convert to data.table
-setDT(d)
-
-# aggregate
-d <- d[,
-  .(
-    N = .N
-  ),
-  keyby = .(
-    location_code,
-    date
-  )
-]
-# aggregated daily dataset that does not contain days with 0 cases
-print(d)
-
-# create skeleton
-skeleton <- data.table(expand.grid(
-  location_code = unique(fhidata::norway_locations_b2020$county_code),
-  date = seq.Date(min(d$date), max(d$date), 1)
-))
-
-# merge the two datasets together
-d <- merge(d, skeleton, by=c("location_code", "date"), all=T)
-
-# Fill in 'missing' Ns with 0
-d[is.na(N), N := 0]
-
-# Now you have a clean aggregated daily dataset that contains days with 0 cases!
-print(d)
-```
-
-We can also create a weekly dataset:
-
-```{r}
-# create 3 new variables:
-d[, isoyearweek := fhi::isoyearweek(date)]
-
-# aggregate down to weekly level
-w <- d[,
-  .(
-    N = sum(N)
-  ),
-  keyby = .(
-    location_code,
-    isoyearweek
-  )
-]
-print(w)
+# We have one weekly dataset
+d_week <- d[granularity_time == "isoweek"]
 ```
 
 ## Graphs for one geographical area
 
-Daily epicurve for `county01`
+Daily epicurve for `norge`
 
 ```{r}
-q <- ggplot(d[location_code=="county03"], aes(x = date, y = N))
-q <- q + geom_col(fill = splstyle::base_color, width = 0.8)
-q <- q + scale_x_date("Date")
-q <- q + scale_y_continuous("Number of reported cases",
-  breaks = splstyle::pretty_breaks(5),
-  expand = expansion(mult = c(0, 0.1))
-)
-q <- q + labs(title = "Epicurve from 2018-01-01 to 2018-02-20")
-q <- q + labs(caption = fhi_caption())
-q <- q + splstyle::theme_fhi_lines_horizontal()
-q
+plot_epicurve(d_day[location_code == "norge"], 
+              type = "single", 
+              var_y = "covid19_cases_testdate_n", 
+              var_x = "date",
+              lab_main = "Daily epicurve for Norway",
+              lab_y = "Cases")
 ```
 
-Weekly epicurve for `county01`
+Weekly epicurve for `norge`
 
 ```{r}
-q <- ggplot(w[location_code=="county03"], aes(x = isoyearweek, y = N))
-q <- q + geom_col(fill = splstyle::base_color, width = 0.8)
-q <- q + scale_x_discrete("Isoweek")
-q <- q + scale_y_continuous("Number of reported cases",
-  breaks = splstyle::pretty_breaks(5),
-  expand = expansion(mult = c(0, 0.1))
-)
-q <- q + labs(title = "Epicurve from 2018-01-01 to 2018-02-20")
-q <- q + labs(caption = fhi_caption())
-q <- q + splstyle::theme_fhi_lines_horizontal()
-q
-```
-
-Weekly epicurve with vertical x-axis labels
-
-```{r}
-q <- ggplot(w, aes(x = isoyearweek, y = N))
-q <- q + geom_col(fill = splstyle::base_color, width = 0.8)
-q <- q + scale_x_discrete("Isoweek")
-q <- q + scale_y_continuous("Number of reported cases",
-  breaks = splstyle::pretty_breaks(5),
-  expand = expansion(mult = c(0, 0.1))
-)
-q <- q + labs(title = "Epicurve from 2018-01-01 to 2018-02-20")
-q <- q + labs(caption = fhi_caption())
-q <- q + splstyle::theme_fhi_lines_horizontal()
-q <- q + splstyle::set_x_axis_vertical()
-q
+plot_epicurve(d_week[location_code == "norge"], 
+              type = "single", 
+              var_y = "covid19_cases_testdate_n", 
+              lab_main = "Weekly epicurve for Norway",
+              breaks_x = fhiplot::every_nth(n = 2),
+              lab_y = "Cases")
 ```
 
 ## Epicurves for multiple geographical areas
 
-When we have multiple geographical areas, we use the function `lemon::facet_rep_wrap` to create multiple epicurves.
+When we have multiple geographical areas, we use the argument `facet_wrap` to create multiple epicurves.
 
-Daily epicurve for all geographical areas with vertical x-axis labels
+Daily epicurve for all of the counties
 
 ```{r fig.height=10, fig.width=8}
-q <- ggplot(d, aes(x = date, y = N))
-q <- q + geom_col(fill = splstyle::base_color, width = 0.8)
-q <- q + lemon::facet_rep_wrap(~location_code, repeat.tick.labels = "y")
-q <- q + splstyle::scale_fill_fhi("Location",palette="primary")
-q <- q + scale_x_date("Date")
-q <- q + scale_y_continuous("Number of reported cases",
-  breaks = splstyle::pretty_breaks(5),
-  expand = expansion(mult = c(0, 0.1))
-)
-q <- q + labs(title = "Epicurve from 2018-01-01 to 2018-02-20")
-q <- q + labs(caption = fhi_caption())
-q <- q + splstyle::theme_fhi_lines_horizontal()
-q <- q + splstyle::set_x_axis_vertical()
-q
+plot_epicurve(d_day[granularity_geo == "county"],
+              type = "single",
+              var_y = "covid19_cases_testdate_n",
+              var_x = "date",
+              lab_main = "Daily epicurve for all the counties",
+              facet_wrap = "location_code",
+              lab_y = "Cases")
 ```
 
-Weekly epicurve with vertical x-axis labels
+Weekly epicurve for all of the counties
 
 ```{r fig.height=10, fig.width=8}
-q <- ggplot(d, aes(x = isoyearweek, y = N))
-q <- q + geom_col(fill = splstyle::base_color, width = 0.8)
-q <- q + lemon::facet_rep_wrap(~location_code, repeat.tick.labels = "y", ncol=4)
-q <- q + scale_fill_fhi("Location",palette="primary")
-q <- q + scale_x_discrete("Isoweek")
-q <- q + scale_y_continuous("Number of reported cases",
-  breaks = splstyle::pretty_breaks(5),
-  expand = expansion(mult = c(0, 0.1))
-)
-q <- q + labs(title = "Epicurve from 2018-01-01 to 2018-02-20")
-q <- q + labs(caption = fhi_caption())
-q <- q + theme_fhi_lines_horizontal()
-q <- q + splstyle::set_x_axis_vertical()
-q
+plot_epicurve(d_week[granularity_geo == "county"],
+              type = "single",
+              var_y = "covid19_cases_testdate_n",
+              lab_main = "Weekly epicurve for all the counties",
+              facet_wrap = "location_code",
+              facet_ncol = 4,
+              lab_y = "Cases")
 ```
 
 ## Coloured epicurves
 
-Sometimes you would like to add colours to differentiate between different variables. This can be done through the `fill` attribute.
+Sometimes you would like to add colours to differentiate between different variables. This can be done through `type = stacked` and the argument `fill_var`
 
 ```{r}
-q <- ggplot(w[location_code %in% c(
-  "county03",
-  "county11",
-  "county15",
-  "county30",
-  "county34")], 
-  aes(x = isoyearweek, y = N, fill = location_code))
-q <- q + geom_col(width = 0.8)
-q <- q + splstyle::scale_fill_fhi("Location",palette="primary")
-q <- q + scale_x_discrete("Isoweek")
-q <- q + scale_y_continuous("Number of reported cases",
-  breaks = splstyle::pretty_breaks(5),
-  expand = expansion(mult = c(0, 0.1))
-)
-q <- q + labs(title = "Epicurve from 2018-01-01 to 2018-02-20")
-q <- q + labs(caption = fhi_caption())
-q <- q + splstyle::theme_fhi_lines_horizontal()
-q <- q + splstyle::set_x_axis_vertical()
-q
-```
 
-## Right axis on epicurve
+plot_epicurve(d_week[granularity_geo == "county"],
+              type = "stacked",
+              fill_var = "location_code",
+              var_y = "covid19_cases_testdate_n",
+              lab_main = "Weekly epicurve for all the counties",
+              lab_y = "Cases")
 
-Sometimes you would like to add colours to differentiate between different variables. This can be done through the `fill` attribute.
 
-```{r}
-pd <- w[location_code %in% "county03"]
-pd[, cum_n := cumsum(N)]
-
-pd[, value_left := N]
-pd[, value_right := cum_n]
-
-max_left <- max(pd$value_left)
-max_right <- max(pd$value_right)
-
-# increase the space in the y-axis
-max_left <- max(c(max_left, 5))
-max_right <- max(c(max_right, 5))
-
-pd[, scaled_value_right := value_right / max_right * max_left]
-
-q <- ggplot(pd, aes(x = isoyearweek))
-q <- q + geom_col(
-  mapping = aes(
-    y = value_left,
-    fill = "The fill variable",
-  ),
-  width = 0.8
-  )
-q <- q + geom_line(
-  mapping = aes(
-    y = scaled_value_right,
-    group = 1,
-    color = "The color variable"
-  ),
-  lwd = 2
-  )
-q <- q + scale_x_discrete("Isoweek")
-q <- q + scale_y_continuous("Number of reported cases",
-  breaks = splstyle::pretty_breaks(5),
-  expand = expansion(mult = c(0, 0.1)),
-  sec.axis = sec_axis(
-    name = "Cumulative number of reported cases\n",
-    ~ . * max_right / max_left,
-    breaks = splstyle::pretty_breaks(5),
-    labels = splstyle::format_nor
-  )
-)
-q <- q + splstyle::scale_fill_fhi("Fill", palette = "primary")
-q <- q + splstyle::scale_color_fhi("Color", palette = "posneg")
-q <- q + labs(title = "Epicurve from 2018-01-01 to 2018-02-20")
-q <- q + labs(caption = fhi_caption())
-q <- q + splstyle::theme_fhi_lines_horizontal()
-q <- q + splstyle::set_x_axis_vertical()
-q
 ```
