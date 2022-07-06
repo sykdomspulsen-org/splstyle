@@ -70,8 +70,6 @@ plot_epicurve.default <- function(x,
     q <- ggplot(x, aes_string(x = var_x, y = var_y, fill = fill_var))
     q <- q + geom_col(position = "dodge", width = 0.8)
     q <- q + scale_fill_fhi(fill_lab, palette = palette)
-
-
   }
 
   if(var_x == "date"){
