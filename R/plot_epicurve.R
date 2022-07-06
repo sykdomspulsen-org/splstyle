@@ -57,11 +57,6 @@ plot_epicurve.default <- function(x,
   stopifnot(var_x %in% c("date", "isoyearweek"))
   stopifnot(type %in% c("single", "stacked", "dodged"))
 
-
-  if(FALSE){
-    stop("this is an error message")
-  }
-
   # dots <- list(...)
 
   if(type == "stacked"){
@@ -74,7 +69,6 @@ plot_epicurve.default <- function(x,
   } else if (type == "dodged") {
     q <- ggplot(x, aes_string(x = var_x, y = var_y, fill = fill_var))
     q <- q + geom_col(position = "dodge", width = 0.8)
-    # q <- q + geom_bar(position = "dodge", stat = "identity", width = 0.8)
     q <- q + scale_fill_fhi(fill_lab, palette = palette)
 
 
