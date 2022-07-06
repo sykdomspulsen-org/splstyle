@@ -3,7 +3,7 @@
 #' @param ... X
 #' @export
 plot_epicurve <- function(x,
-                     ...) {
+                          ...) {
   UseMethod("plot_epicurve", x)
 }
 
@@ -22,6 +22,7 @@ plot_epicurve <- function(x,
 #' @param lab_main The main title of the graph
 #' @param lab_sub The subtitle of the graph
 #' @param lab_caption If not specified, splstyle::fhi_caption() is used as the lab_caption.
+#' @param lab_date How the dates on the x-axis should be formatted if var_x = "date"
 #' @param format_y How the y-axis ticks should be formatted. For example splstyle::format_nor_num_0 or splstyle::format_nor_perc_0
 #' @param scale_y How to scale the y-axis if the graph is split with facet_wrap. Free or fixed.
 #' @param palette what palette to use
@@ -33,31 +34,25 @@ plot_epicurve <- function(x,
 #' plot_epicurve(norway_covid19_cases_by_time_location[granularity_geo == "county" & location_code %in% c("county34", "county38", "county11")], type = "dodged", fill_var = "location_code", var_y = "covid19_cases_testdate_n")
 #' @export
 plot_epicurve.default <- function(x,
-                             type = "single",
-                             fill_var = NULL,
-                             fill_lab = NULL,
-                             facet_wrap = NULL,
-                             facet_ncol = NULL,
-                             var_x = "isoyearweek",
-                             var_y,
-                             breaks_x = NULL,
-                             lab_x = NULL,
-                             lab_y = NULL,
-                             lab_main = NULL,
-                             lab_sub = NULL,
-                             lab_caption = fhi_caption(),
-                             format_y = format_nor_num_0,
-                             scale_y = "free",
-                             palette = "primary",
-                             base_size = 12,
-                             ...) {
-
-  # lab_y = "Number of reported deaths"
-  # var_y = "N"
-  # facet_wrap = "location_code"
-  # facet_ncol = 2
-  # breaks_x = every_nth(2)
-  # fill_var = "location_code"
+                                  type = "single",
+                                  fill_var = NULL,
+                                  fill_lab = NULL,
+                                  facet_wrap = NULL,
+                                  facet_ncol = NULL,
+                                  var_x = "isoyearweek",
+                                  var_y,
+                                  breaks_x = fhiplot::every_nth(n = 2),
+                                  lab_x = NULL,
+                                  lab_y = NULL,
+                                  lab_main = NULL,
+                                  lab_sub = NULL,
+                                  lab_caption = fhi_caption(),
+                                  lab_date = "%Y-%m-%d",
+                                  format_y = format_nor_num_0,
+                                  scale_y = "free",
+                                  palette = "primary",
+                                  base_size = 12,
+                                  ...) {
 
   stopifnot(var_x %in% c("date", "isoyearweek"))
   stopifnot(type %in% c("single", "stacked", "dodged"))
@@ -86,7 +81,7 @@ plot_epicurve.default <- function(x,
   }
 
   if(var_x == "date"){
-    q <- q + scale_x_date(name = lab_x)
+    q <- q + scale_x_date(name = lab_x, date_labels = lab_date)
   } else{
     q <- q + scale_x_discrete(name = lab_x, breaks = breaks_x)
   }
@@ -104,9 +99,8 @@ plot_epicurve.default <- function(x,
   q <- q + labs(title = lab_main,
                 subtitle = lab_sub,
                 caption = lab_caption,
-                )
+  )
   q <- q + theme_fhi_lines_horizontal(legend_position = "bottom", base_size = base_size)
   q <- q + set_x_axis_vertical()
   q
 }
-
