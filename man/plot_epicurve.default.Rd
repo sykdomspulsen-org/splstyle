@@ -13,12 +13,13 @@
   facet_ncol = NULL,
   var_x = "isoyearweek",
   var_y,
-  breaks_x = NULL,
+  breaks_x = fhiplot::every_nth(n = 2),
   lab_x = NULL,
   lab_y = NULL,
   lab_main = NULL,
   lab_sub = NULL,
   lab_caption = fhi_caption(),
+  lab_date = "\%Y-\%m-\%d",
   format_y = format_nor_num_0,
   scale_y = "free",
   palette = "primary",
@@ -54,6 +55,8 @@
 \item{lab_sub}{The subtitle of the graph}
 
 \item{lab_caption}{If not specified, splstyle::fhi_caption() is used as the lab_caption.}
+
+\item{lab_date}{How the dates on the x-axis should be formatted if var_x = "date"}
 
 \item{format_y}{How the y-axis ticks should be formatted. For example splstyle::format_nor_num_0 or splstyle::format_nor_perc_0}
 
