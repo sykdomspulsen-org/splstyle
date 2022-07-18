@@ -73,7 +73,7 @@ plot_epicurve.default <- function(x,
   }
 
   if(var_x == "date"){
-    q <- q + scale_x_date(name = lab_x, date_labels = lab_date)
+    q <- q + scale_x_date(name = lab_x, date_labels = lab_date, breaks = breaks_x)
   } else{
     q <- q + scale_x_discrete(name = lab_x, breaks = breaks_x)
   }
