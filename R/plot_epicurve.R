@@ -3,7 +3,7 @@
 #' @param ... X
 #' @export
 plot_epicurve <- function(x,
-                     ...) {
+                          ...) {
   UseMethod("plot_epicurve", x)
 }
 
@@ -34,33 +34,28 @@ plot_epicurve <- function(x,
 #' plot_epicurve(norway_covid19_cases_by_time_location[granularity_geo == "county" & location_code %in% c("county34", "county38", "county11")], type = "dodged", fill_var = "location_code", var_y = "covid19_cases_testdate_n")
 #' @export
 plot_epicurve.default <- function(x,
-                             type = "single",
-                             fill_var = NULL,
-                             fill_lab = NULL,
-                             facet_wrap = NULL,
-                             facet_ncol = NULL,
-                             var_x = "isoyearweek",
-                             var_y,
-                             breaks_x = fhiplot::every_nth(n = 2),
-                             lab_x = NULL,
-                             lab_y = NULL,
-                             lab_main = NULL,
-                             lab_sub = NULL,
-                             lab_caption = fhi_caption(),
-                             lab_date = "%Y-%m-%d",
-                             format_y = format_nor_num_0,
-                             scale_y = "free",
-                             palette = "primary",
-                             base_size = 12,
-                             ...) {
+                                  type = "single",
+                                  fill_var = NULL,
+                                  fill_lab = NULL,
+                                  facet_wrap = NULL,
+                                  facet_ncol = NULL,
+                                  var_x = "isoyearweek",
+                                  var_y,
+                                  breaks_x = fhiplot::every_nth(n = 2),
+                                  lab_x = NULL,
+                                  lab_y = NULL,
+                                  lab_main = NULL,
+                                  lab_sub = NULL,
+                                  lab_caption = fhi_caption(),
+                                  lab_date = "%Y-%m-%d",
+                                  format_y = format_nor_num_0,
+                                  scale_y = "free",
+                                  palette = "primary",
+                                  base_size = 12,
+                                  ...) {
 
   stopifnot(var_x %in% c("date", "isoyearweek"))
   stopifnot(type %in% c("single", "stacked", "dodged"))
-
-
-  if(FALSE){
-    stop("this is an error message")
-  }
 
   # dots <- list(...)
 
@@ -74,14 +69,11 @@ plot_epicurve.default <- function(x,
   } else if (type == "dodged") {
     q <- ggplot(x, aes_string(x = var_x, y = var_y, fill = fill_var))
     q <- q + geom_col(position = "dodge", width = 0.8)
-    # q <- q + geom_bar(position = "dodge", stat = "identity", width = 0.8)
     q <- q + scale_fill_fhi(fill_lab, palette = palette)
-
-
   }
 
   if(var_x == "date"){
-    q <- q + scale_x_date(name = lab_x, date_labels = lab_date)
+    q <- q + scale_x_date(name = lab_x, date_labels = lab_date, breaks = breaks_x)
   } else{
     q <- q + scale_x_discrete(name = lab_x, breaks = breaks_x)
   }
@@ -99,9 +91,8 @@ plot_epicurve.default <- function(x,
   q <- q + labs(title = lab_main,
                 subtitle = lab_sub,
                 caption = lab_caption,
-                )
+  )
   q <- q + theme_fhi_lines_horizontal(legend_position = "bottom", base_size = base_size)
   q <- q + set_x_axis_vertical()
   q
 }
-
