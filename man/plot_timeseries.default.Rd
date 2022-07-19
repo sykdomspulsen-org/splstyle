@@ -75,7 +75,7 @@
 \item{...}{Not currently used.}
 }
 \description{
-plot_timeseries
+If the dataset is already long it needs to include the following columns: variable, name_outcome and n.
 }
 \examples{
 plot_timeseries(norway_covid19_cases_by_time_location[granularity_geo == "nation" & granularity_time == "isoweek"], var_y = c("Covid cases" = "covid19_cases_testdate_n"), breaks_x = every_nth(8), breaks_y = splstyle::pretty_breaks(5))
