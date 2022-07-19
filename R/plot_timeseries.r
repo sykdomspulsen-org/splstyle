@@ -8,6 +8,8 @@ plot_timeseries <- function(x,
 }
 
 #' plot_timeseries
+#'
+#' If the dataset is already long it needs to include the following columns: variable, name_outcome and n.
 #' @param x Dataset
 #' @param var_x "date" or "isoyearweek"
 #' @param var_y The name of the variable to use on the y-axis of the graph
@@ -70,6 +72,19 @@ plot_timeseries.default <- function(x,
 
     d <- d_name[d, on = 'variable']
   }
+
+  if(!"name_outcome" %in% names(d)){
+    stop("name_outcome is not a column in x")
+  }
+
+  if(!"variable" %in% names(d)){
+    stop("variable is not a column in x")
+  }
+
+  if(!"n" %in% names(d)){
+    stop("n is not a column in x")
+  }
+
 
   q <- ggplot(d, aes_string(x = var_x))
   q <- q + geom_path(aes(y = n, color = name_outcome, group = name_outcome), lwd = 1)
