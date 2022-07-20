@@ -7,7 +7,8 @@ plot_epicurve <- function(x,
   UseMethod("plot_epicurve", x)
 }
 
-#' Epicurve
+#' Create a new epicurve
+#'
 #' @param x Dataset
 #' @param type "single", "stacked" or "dodged"
 #' @param fill_var variable to fill by.

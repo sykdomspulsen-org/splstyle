@@ -2,7 +2,7 @@
 % Please edit documentation in R/plot_timeseries.r
 \name{plot_timeseries.default}
 \alias{plot_timeseries.default}
-\title{plot_timeseries}
+\title{Create a new timeseries graph}
 \usage{
 \method{plot_timeseries}{default}(
   x,

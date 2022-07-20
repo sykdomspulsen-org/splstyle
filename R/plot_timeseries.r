@@ -7,7 +7,7 @@ plot_timeseries <- function(x,
   UseMethod("plot_timeseries", x)
 }
 
-#' plot_timeseries
+#' Create a new timeseries graph
 #'
 #' If the dataset is already long it needs to include the following columns: variable, name_outcome and n.
 #' @param x Dataset

@@ -2,7 +2,7 @@
 % Please edit documentation in R/plot_epicurve.R
 \name{plot_epicurve.default}
 \alias{plot_epicurve.default}
-\title{Epicurve}
+\title{Create a new epicurve}
 \usage{
 \method{plot_epicurve}{default}(
   x,
@@ -69,7 +69,7 @@
 \item{...}{Not currently used.}
 }
 \description{
-Epicurve
+Create a new epicurve
 }
 \examples{
 plot_epicurve(norway_covid19_cases_by_time_location[location_code == "county03"], type = "single", var_y = "covid19_cases_testdate_n")
