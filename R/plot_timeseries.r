@@ -90,7 +90,7 @@ plot_timeseries.default <- function(x,
 
   q <- ggplot(d, aes_string(x = var_x))
 
-  if(!is.null(var_group)){
+  if(is.null(var_group)){
     q <- q + geom_path(aes(y = n, color = name_outcome, group = name_outcome), lwd = 1)
   } else {
     q <- q + geom_path(aes(y = n, color = var_group, group = var_group), lwd = 1)
