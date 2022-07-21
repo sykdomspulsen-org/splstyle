@@ -26,6 +26,7 @@
   scale_y = "free",
   base_size = 12,
   wide_table = TRUE,
+  var_group = NULL,
   ...
 )
 }
@@ -71,6 +72,8 @@
 \item{base_size}{The base size of the plot.}
 
 \item{wide_table}{TRUE if the data.table is wide and FALSE if the data.table is long.}
+
+\item{var_group}{variable to group by}
 
 \item{...}{Not currently used.}
 }

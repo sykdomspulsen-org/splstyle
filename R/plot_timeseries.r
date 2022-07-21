@@ -31,6 +31,7 @@ plot_timeseries <- function(x,
 #' @param scale_y How to scale the y-axis if the graph is split with facet_wrap. Free or fixed.
 #' @param base_size The base size of the plot.
 #' @param wide_table TRUE if the data.table is wide and FALSE if the data.table is long.
+#' @param var_group variable to group by
 #' @param ... Not currently used.
 #' @examples
 #' plot_timeseries(norway_covid19_cases_by_time_location[granularity_geo == "nation" & granularity_time == "isoweek"], var_y = c("Covid cases" = "covid19_cases_testdate_n"), breaks_x = every_nth(8), breaks_y = splstyle::pretty_breaks(5))
@@ -57,13 +58,14 @@ plot_timeseries.default <- function(x,
                             scale_y = "free",
                             base_size = 12,
                             wide_table = TRUE,
+                            var_group = NULL,
                             ...
                             ) {
 
 
   if(wide_table){
     d <- melt(x,
-              id.vars = c(facet_wrap, var_x),
+              id.vars = c(facet_wrap, var_x, var_group),
               measure.vars = list(n = var_y),
               value.name = "n"
     )
@@ -87,7 +89,13 @@ plot_timeseries.default <- function(x,
 
 
   q <- ggplot(d, aes_string(x = var_x))
-  q <- q + geom_path(aes(y = n, color = name_outcome, group = name_outcome), lwd = 1)
+
+  if(!is.null(var_group)){
+    q <- q + geom_path(aes(y = n, color = name_outcome, group = name_outcome), lwd = 1)
+  } else {
+    q <- q + geom_path(aes(y = n, color = var_group, group = var_group), lwd = 1)
+  }
+
   q <- q + scale_x_discrete(name = lab_x, breaks = breaks_x)
   q <- q + scale_y_continuous(name = lab_y,
                               breaks = breaks_y,
