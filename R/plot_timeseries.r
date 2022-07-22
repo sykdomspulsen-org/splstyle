@@ -91,12 +91,14 @@ plot_timeseries.default <- function(x,
   # q <- ggplot(d, aes_string(x = var_x))
 
   if(is.null(var_group)){
-    q <- ggplot(d, aes_string(x = var_x, color = name_outcome, group = name_outcome))
+    q <- ggplot(d, aes_string(x = var_x))
+    q <- q + geom_path(aes(y = n, color = name_outcome, group = name_outcome), lwd = 1)
   } else {
     q <- ggplot(d, aes_string(x = var_x, color = var_group, group = var_group))
+    q <- q + geom_path(aes(y = n), lwd = 1)
   }
 
-  q <- q + geom_path(aes(y = n), lwd = 1)
+  # q <- q + geom_path(aes(y = n), lwd = 1)
 
   q <- q + scale_x_discrete(name = lab_x, breaks = breaks_x)
   q <- q + scale_y_continuous(name = lab_y,
