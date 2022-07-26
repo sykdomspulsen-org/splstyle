@@ -87,9 +87,6 @@ plot_timeseries.default <- function(x,
     stop("n is not a column in x")
   }
 
-
-  # q <- ggplot(d, aes_string(x = var_x))
-
   if(is.null(var_group)){
     q <- ggplot(d, aes_string(x = var_x))
     q <- q + geom_path(aes(y = n, color = name_outcome, group = name_outcome), lwd = 1)
@@ -97,8 +94,6 @@ plot_timeseries.default <- function(x,
     q <- ggplot(d, aes_string(x = var_x, color = var_group, group = var_group))
     q <- q + geom_path(aes(y = n), lwd = 1)
   }
-
-  # q <- q + geom_path(aes(y = n), lwd = 1)
 
   q <- q + scale_x_discrete(name = lab_x, breaks = breaks_x)
   q <- q + scale_y_continuous(name = lab_y,
@@ -113,14 +108,14 @@ plot_timeseries.default <- function(x,
   }
 
   q <- q + expand_limits(y = 0)
-  q <- q + fhiplot::scale_color_fhi(lab_legend, palette = palette, direction = palette_dir)
+  q <- q + scale_color_fhi(lab_legend, palette = palette, direction = palette_dir, guide = guide_legend(ncol = 3))
   q <- q + theme_fhi_lines_horizontal(legend_position = legend_position, base_size = base_size)
   q <- q + theme(legend.direction = legend_direction)
   q <- q + labs(title = lab_main,
                 subtitle = lab_sub,
                 caption = lab_caption
                 )
-  q <- q + fhiplot::set_x_axis_vertical()
+  q <- q + set_x_axis_vertical()
   q
 
 }
