@@ -31,10 +31,12 @@ plot_timeseries <- function(x,
 #' @param scale_y How to scale the y-axis if the graph is split with facet_wrap. Free or fixed.
 #' @param base_size The base size of the plot.
 #' @param wide_table TRUE if the data.table is wide and FALSE if the data.table is long.
+#' @param var_group variable to group by
 #' @param ... Not currently used.
 #' @examples
 #' plot_timeseries(norway_covid19_cases_by_time_location[granularity_geo == "nation" & granularity_time == "isoweek"], var_y = c("Covid cases" = "covid19_cases_testdate_n"), breaks_x = every_nth(8), breaks_y = splstyle::pretty_breaks(5))
 #' plot_timeseries(norway_covid19_cases_by_time_location[location_code %in% c("county03", "county18", "county30", "county54") & granularity_time == "isoweek"], var_y = c("Covid cases" = "covid19_cases_testdate_n"), breaks_x = every_nth(8), breaks_y = splstyle::pretty_breaks(5), facet_wrap = "location_code")
+#' plot_timeseries(norway_covid19_cases_by_time_location[granularity_geo == "county" & granularity_time == "isoweek"], var_y = c("Covid cases" = "covid19_cases_testdate_n"), breaks_x = every_nth(8), breaks_y = splstyle::pretty_breaks(5), var_group = "location_code")
 #' @export
 plot_timeseries.default <- function(x,
                             var_x = "isoyearweek",
@@ -57,13 +59,14 @@ plot_timeseries.default <- function(x,
                             scale_y = "free",
                             base_size = 12,
                             wide_table = TRUE,
+                            var_group = NULL,
                             ...
                             ) {
 
 
   if(wide_table){
     d <- melt(x,
-              id.vars = c(facet_wrap, var_x),
+              id.vars = c(facet_wrap, var_x, var_group),
               measure.vars = list(n = var_y),
               value.name = "n"
     )
@@ -85,9 +88,14 @@ plot_timeseries.default <- function(x,
     stop("n is not a column in x")
   }
 
+  if(is.null(var_group)){
+    q <- ggplot(d, aes_string(x = var_x))
+    q <- q + geom_path(aes(y = n, color = name_outcome, group = name_outcome), lwd = 1)
+  } else {
+    q <- ggplot(d, aes_string(x = var_x, color = var_group, group = var_group))
+    q <- q + geom_path(aes(y = n), lwd = 1)
+  }
 
-  q <- ggplot(d, aes_string(x = var_x))
-  q <- q + geom_path(aes(y = n, color = name_outcome, group = name_outcome), lwd = 1)
   q <- q + scale_x_discrete(name = lab_x, breaks = breaks_x)
   q <- q + scale_y_continuous(name = lab_y,
                               breaks = breaks_y,
@@ -101,14 +109,14 @@ plot_timeseries.default <- function(x,
   }
 
   q <- q + expand_limits(y = 0)
-  q <- q + fhiplot::scale_color_fhi(lab_legend, palette = palette, direction = palette_dir)
+  q <- q + scale_color_fhi(lab_legend, palette = palette, direction = palette_dir, guide = guide_legend(ncol = 3))
   q <- q + theme_fhi_lines_horizontal(legend_position = legend_position, base_size = base_size)
   q <- q + theme(legend.direction = legend_direction)
   q <- q + labs(title = lab_main,
                 subtitle = lab_sub,
                 caption = lab_caption
                 )
-  q <- q + fhiplot::set_x_axis_vertical()
+  q <- q + set_x_axis_vertical()
   q
 
 }
